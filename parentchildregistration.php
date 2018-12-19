@@ -123,14 +123,97 @@ function checkTemplate($id) {
  */
 function parentchildregistration_civicrm_buildForm($formName, &$form) {
   if ($formName == "CRM_Event_Form_Registration_Register") {
-    if (!checkTemplate($form->_eventId)) {
+    $templateId = civicrm_api3('Event', 'get', [
+      'id' => $form->_eventId,
+      'return.' . EVENT_TEMPLATE_ID => 1,
+    ])['values'][$form->_eventId][EVENT_TEMPLATE_ID];
+
+    if ($templateId) {
+      // Add JS
+      CRM_Core_Region::instance('page-body')->add(array(
+        'template' => 'CRM/Parentchildregistration/ParentChild.tpl',
+      ));
+    }
+  }
+}
+
+/**
+ * Implements hook_civicrm_validateForm().
+ *
+ * @param string $formName
+ * @param array $fields
+ * @param array $files
+ * @param CRM_Core_Form $form
+ * @param array $errors
+ */
+function parentchildregistration_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
+  if ($formName == "CRM_Event_Form_Registration_Register") {
+    $templateId = civicrm_api3('Event', 'get', [
+      'id' => $form->_eventId,
+      'return.' . EVENT_TEMPLATE_ID => 1,
+    ])['values'][$form->_eventId][EVENT_TEMPLATE_ID];
+    if (!$templateId) {
       return;
     }
-
-    // Add JS
-    CRM_Core_Region::instance('page-body')->add(array(
-      'template' => 'CRM/Parentchildregistration/ParentChild.tpl',
-    ));
+    $count = 1;
+    $template = getEventTemplates($templateId);
+    while ($count < 8) {
+      $constant = constant('WAIVER_' . $count);
+      
+      if (empty($fields[$constant][1])) {
+        if ($count == 5) {
+          if (!in_array($template, ['SLO Skill Building', 'Workshop Behaviour', 'Workshop Communication', 'Workshop - Other', 'Workshop - Social'])) {
+            $errors[$constant] = ts('This field is required.');
+          } 
+        }
+        else {
+          $errors[$constant] = ts('This field is required.');
+        }
+      }
+      $count++;
+    }
+    if (!empty($fields[CHILDPRICE])) {
+      switch ($fields[CHILDPRICE]) {
+        case 59:
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+        break;
+        case 60:
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          }
+        break;
+        case 61:
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          }
+          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          }
+        break;
+        case 74:
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          }
+          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          }
+          if (empty($fields[CHILD4FN]) || empty($fields[CHILD4LN])) {
+            $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+          }
+        break;
+      }
+    }
   }
 }
 
@@ -142,17 +225,22 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
  */
 function parentchildregistration_civicrm_postProcess($formName, &$form) {
   if ($formName == "CRM_Event_Form_Registration_Confirm") {
-    $child1 = $form->_values['participant']['participant_contact_id'];
+    $templateId = civicrm_api3('Event', 'get', [
+      'id' => $form->_eventId,
+      'return.' . EVENT_TEMPLATE_ID => 1,
+    ])['values'][$form->_eventId]['custom_' . TEMPLATE_ID];
+    if (!$templateId) {
+      return;
+    }
+    $parent = $form->_values['participant']['participant_contact_id'];
     $participantId = $form->getVar('_participantId');
 
     $relatedContacts = [
-      'parent1' => [
-        'first_name' => $form->_values['params'][$participantId][PARENT1FN] ?: '',
-        'last_name' => $form->_values['params'][$participantId][PARENT1LN] ?: '',
-      ],
-      'parent2' => [
-        'first_name' => $form->_values['params'][$participantId][PARENT2FN] ?: '',
-        'last_name' => $form->_values['params'][$participantId][PARENT2LN] ?: '',
+      'child1' => [
+        'first_name' => $form->_values['params'][$participantId][CHILD1FN] ?: '',
+        'last_name' => $form->_values['params'][$participantId][CHILD1LN] ?: '',
+        'birth_date' => $form->_values['params'][$participantId][CHILD1DOB] ?: '',
+        'gender' => $form->_values['params'][$participantId][CHILD1GEN] ?: '',
       ],
       'child2' => [
         'first_name' => $form->_values['params'][$participantId][CHILD2FN] ?: '',
@@ -166,6 +254,12 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
         'birth_date' => $form->_values['params'][$participantId][CHILD3DOB] ?: '',
         'gender' => $form->_values['params'][$participantId][CHILD3GEN] ?: '',
       ],
+      'child4' => [
+        'first_name' => $form->_values['params'][$participantId][CHILD4FN] ?: '',
+        'last_name' => $form->_values['params'][$participantId][CHILD4LN] ?: '',
+        'birth_date' => $form->_values['params'][$participantId][CHILD4DOB] ?: '',
+        'gender' => $form->_values['params'][$participantId][CHILD4GEN] ?: '',
+      ],
     ];
     foreach ($relatedContacts as $person => $params) {
       if (empty($params['first_name']) && empty($params['last_name'])) {
@@ -173,56 +267,70 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       }
       $dedupeParams = CRM_Dedupe_Finder::formatParams($params, 'Individual');
       $dedupeParams['check_permission'] = FALSE;
-      $rule = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_dedupe_rule_group WHERE name = 'Only_first_last_12'");
-      $dupes = CRM_Dedupe_Finder::dupesByParams($dedupeParams, $type, NULL, array(), $rule);
+      $rule = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_dedupe_rule_group WHERE name = 'Only_first_last_8'");
+      $dupes = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Individual', NULL, array(), $rule);
       $cid = CRM_Utils_Array::value('0', $dupes, NULL);
       $params['contact_type'] = 'Individual';
+      if (in_array($person, ['child1', 'child2', 'child3', 'child4'])) {
+        $params['contact_sub_type'] = 'Child';
+      }
+      if ($person == 'child1') {
+        $params[LEAD_MEMBER] = 1;
+      }
       if ($cid) {
         $params['contact_id'] = $cid;
       }
       $contact[$person] = (array) civicrm_api3('Contact', 'create', $params)['id'];
+
+      // Check child contacts for date of first contact.
+      if (strpos($person, 'child') !== false) {
+	$isFilled = CRM_Core_DAO::executeQuery("SELECT entity_id FROM civicrm_value_newsletter_cu_3 WHERE entity_id IN (" . $contact[$person][0] . ") AND (first_contacted_358 IS NOT NULL OR first_contacted_358 != '')")->fetchAll();
+        if (empty($isFilled)) {
+          civicrm_api3('CustomValue', 'create', [
+            'entity_id' => $contact[$person][0],
+            'custom_29' => date('Ymd'),
+          ]);
+        }
+      }
+      
+      if (!empty($form->_values['params'][$participantId]['postal_code-Primary'])) {
+        list($chapter, $region) = getCodes($form->_values['params'][$participantId]['postal_code-Primary']);
+        if ($chapter || $region) {
+          $cParams = [
+            'chapter' => $chapter,
+            'region' => $region,
+            'contact_id' => $contact[$person][0],
+          ];
+          setCodes($cParams);
+        }
+      }
     }
 
     // Create relationships
-    $spouse = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Spouse of', 'id', 'name_a_b');
     $sibling = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Sibling of', 'id', 'name_a_b');
-    $parent = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Parent of', 'id', 'name_a_b');
+    $childRel = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Child of', 'id', 'name_a_b');
 
-    // Create parent of relationship with first child.
-    if (!empty($contact['parent1'])) {
-      createRelationship($contact['parent1'][0], $child1, $parent);
-    }
-
-    if (!empty($contact['parent2'])) {
-      createRelationship($contact['parent2'][0], $child1, $parent);
-      createRelationship($contact['parent2'][0], $contact['parent1'][0], $spouse);
+    foreach ($contact as $person => $cid) {
+      if (!empty($contact[$person])) {
+        createRelationship($contact[$person][0], $parent, $childRel);
+      }
     }
 
     if (!empty($contact['child2'])) {
-      createRelationship($contact['child2'][0], $child1, $sibling);
-      if (!empty($contact['parent1'])) {
-        createRelationship($contact['parent1'][0], $contact['child2'][0], $parent);
-      }
-
-      if (!empty($contact['parent2'])) {
-        createRelationship($contact['parent2'][0], $contact['child2'][0], $parent);
-      }
+      createRelationship($contact['child1'][0], $contact['child2'][0], $sibling);
     }
-
     if (!empty($contact['child3'])) {
-      createRelationship($contact['child3'][0], $child1, $sibling);
-      if (!empty($contact['parent1'])) {
-        createRelationship($contact['parent1'][0], $contact['child3'][0], $parent);
-      }
-
-      if (!empty($contact['parent2'])) {
-        createRelationship($contact['parent2'][0], $contact['child3'][0], $parent);
-      }
-
-      if (!empty($contact['child2'])) {
-        createRelationship($contact['child2'][0], $contact['child3'][0], $sibling);
-      }
+      createRelationship($contact['child1'][0], $contact['child3'][0], $sibling);
+      createRelationship($contact['child2'][0], $contact['child3'][0], $sibling);
     }
+    if (!empty($contact['child4'])) {
+      createRelationship($contact['child1'][0], $contact['child4'][0], $sibling);
+      createRelationship($contact['child2'][0], $contact['child4'][0], $sibling);
+      createRelationship($contact['child3'][0], $contact['child4'][0], $sibling);
+    }
+
+
+
   }
 }
 
@@ -232,5 +340,8 @@ function createRelationship($cida, $cidb, $type) {
     "contact_id_b" => $cidb,
     "relationship_type_id" => $type,
   );
-  civicrm_api3("Relationship", "create", $relationshipParams);
+  $rel = civicrm_api3("Relationship", "get", $relationshipParams);
+  if ($rel['count'] < 1) {
+    civicrm_api3("Relationship", "create", $relationshipParams);
+  }
 }

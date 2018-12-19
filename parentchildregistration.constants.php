@@ -1,19 +1,45 @@
 <?php
 
 // Contacts
-define('PARENT1FN', 'custom_184');
-define('PARENT1LN', 'custom_188');
-define('PARENT2FN', 'custom_185');
-define('PARENT2LN', 'custom_189');
-define('CHILD2FN', 'custom_186');
-define('CHILD2LN', 'custom_187');
-define('CHILD3FN', 'custom_190');
-define('CHILD3LN', 'custom_191');
-define('CHILD2DOB', 'custom_192');
-define('CHILD2GEN', 'custom_193');
-define('CHILD3DOB', 'custom_194');
-define('CHILD3GEN', 'custom_195');
+/*
+define('PARENT1FN', 'custom_284');
+define('PARENT1LN', 'custom_285');
+define('PARENT2FN', 'custom_286');
+define('PARENT2LN', 'custom_287');
+*/
+define('EVENT_TEMPLATE_ID', 'custom_327');
+
+define('CHILD1FN', 'custom_310');
+define('CHILD1LN', 'custom_311');
+define('CHILD1DOB', 'custom_312');
+define('CHILD1GEN', 'custom_313');
+define('LEAD_MEMBER', 'custom_28');
+define('FIRST_CONTACT', 'custom_358');
+
+define('CHILD2FN', 'custom_288');
+define('CHILD2LN', 'custom_289');
+define('CHILD2DOB', 'custom_293');
+define('CHILD2GEN', 'custom_294');
+
+define('CHILD3FN', 'custom_290');
+define('CHILD3LN', 'custom_291');
+define('CHILD3DOB', 'custom_295');
+define('CHILD3GEN', 'custom_296');
+
+define('CHILD4FN', 'custom_314');
+define('CHILD4LN', 'custom_315');
+define('CHILD4DOB', 'custom_316');
+define('CHILD4GEN', 'custom_317');
 
 // Price Sets
-define('CHILDPRICE', 'price_346');
-define('PARENTPRICE', 'price_347');
+define('CHILDPRICE', 'price_38');
+define('PARENTPRICE', 'price_39');
+
+//Waivers
+define('WAIVER_1', 'custom_318');
+define('WAIVER_2', 'custom_319');
+define('WAIVER_3', 'custom_320');
+define('WAIVER_4', 'custom_321');
+define('WAIVER_5', 'custom_322');
+define('WAIVER_6', 'custom_323');
+define('WAIVER_7', 'custom_355');
