@@ -267,7 +267,7 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       }
       $dedupeParams = CRM_Dedupe_Finder::formatParams($params, 'Individual');
       $dedupeParams['check_permission'] = FALSE;
-      $rule = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_dedupe_rule_group WHERE name = 'Only_first_last_8'");
+      $rule = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_dedupe_rule_group WHERE name = 'Child_Rule_10'");
       $dupes = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Individual', NULL, array(), $rule);
       $cid = CRM_Utils_Array::value('0', $dupes, NULL);
       $params['contact_type'] = 'Individual';
@@ -294,14 +294,15 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       }
       
       if (!empty($form->_values['params'][$participantId]['postal_code-Primary'])) {
-        list($chapter, $region) = getCodes($form->_values['params'][$participantId]['postal_code-Primary']);
+        
+        list($chapter, $region) = getChapRegCodes($form->_values['params'][$participantId]['postal_code-Primary']);
         if ($chapter || $region) {
           $cParams = [
             'chapter' => $chapter,
             'region' => $region,
             'contact_id' => $contact[$person][0],
           ];
-          setCodes($cParams);
+          setChapRegCodes($cParams);
         }
       }
     }
@@ -328,9 +329,50 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       createRelationship($contact['child2'][0], $contact['child4'][0], $sibling);
       createRelationship($contact['child3'][0], $contact['child4'][0], $sibling);
     }
+  }
+}
+
+function getChapRegCodes($postalCode) {
+  $chapterCode = substr($postalCode, 0, 3);
+  $sql = "SELECT pcode, region, chapter FROM chapters WHERE pcode = '{$chapterCode}'";
+  $dao = CRM_Core_DAO::executeQuery($sql);
+  while ($dao->fetch()) {
+    $region = $dao->region;
+    $chapter = $dao->chapter;
+  }
+  return [$chapter, $region];
+}
 
 
+function getChapRegIds() {
+  $chapterId = civicrm_api3('CustomField', 'getvalue', array(
+    'name' => 'Chapter',
+    'return' => 'id',
+    'custom_group_id' => "chapter_region",
+  ));
 
+  $regionId = civicrm_api3('CustomField', 'getvalue', array(
+    'name' => 'Region',
+    'return' => 'id',
+    'custom_group_id' => "chapter_region",
+  ));
+  return [$chapterId, $regionId];
+}
+
+function setChapRegCodes($params, $existingCodes = []) {
+  list($chapterId, $regionId) = getChapRegIds();
+
+  if (!empty($params['chapter'])) {
+    civicrm_api3('CustomValue', 'create', array(
+      'entity_id' => $params['contact_id'],
+      'custom_' . $chapterId => $params['chapter'],
+    ));
+  }
+  if (!empty($params['region'])) {
+    civicrm_api3('CustomValue', 'create', array(
+      'entity_id' => $params['contact_id'],
+      'custom_' . $regionId => $params['region'],
+    ));
   }
 }
 
