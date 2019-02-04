@@ -235,6 +235,8 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
     $parent = $form->_values['participant']['participant_contact_id'];
     $participantId = $form->getVar('_participantId');
 
+    $address = civicrm_api3('Address', 'get', ['contact_id' => $parent])['values'];
+
     $relatedContacts = [
       'child1' => [
         'first_name' => $form->_values['params'][$participantId][CHILD1FN] ?: '',
@@ -291,8 +293,28 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
             'custom_29' => date('Ymd'),
           ]);
         }
+        // Add I am a person with ASD.
+        civicrm_api3('CustomValue', 'create', [
+          'entity_id' => $contact[$person][0],
+          'custom_7' => 'Une personne TSA',
+        ]);
       }
-      
+
+      // Create participant record for child.
+      civicrm_api3('Participant', 'create', [
+        'contact_id' => $contact[$person][0],
+        'event_id' => $form->_eventId,
+        'registered_by_id' => $participantId,
+      ]);
+
+      // Add address for child.
+      foreach ($address as $k => &$val) {
+        unset($val['id']);
+        $val['contact_id'] = $contact[$person][0];
+        $val['master_id'] = $k;
+        civicrm_api3('Address', 'create', $address[$k]);
+      }
+ 
       if (!empty($form->_values['params'][$participantId]['postal_code-Primary'])) {
         
         list($chapter, $region) = getChapRegCodes($form->_values['params'][$participantId]['postal_code-Primary']);
