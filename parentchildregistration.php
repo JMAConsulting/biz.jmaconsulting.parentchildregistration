@@ -175,40 +175,40 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
     if (!empty($fields[CHILDPRICE])) {
       switch ($fields[CHILDPRICE]) {
         case 59:
-          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
             $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
           }
         break;
         case 60:
-          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
             $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
             $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
           }
         break;
         case 61:
-          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
             $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
             $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
           }
-          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
             $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
           }
         break;
         case 74:
-          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
             $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
             $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
           }
-          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
             $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
           }
-          if (empty($fields[CHILD4FN]) || empty($fields[CHILD4LN])) {
+          if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
             $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
           }
         break;
