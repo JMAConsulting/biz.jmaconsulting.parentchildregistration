@@ -355,7 +355,7 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
 }
 
 function getChapRegCodes($postalCode) {
-  $chapterCode = substr($postalCode, 0, 3);
+  $chapterCode = strtoupper(substr($postalCode, 0, 3));
   $sql = "SELECT pcode, region, chapter FROM chapters WHERE pcode = '{$chapterCode}'";
   $dao = CRM_Core_DAO::executeQuery($sql);
   while ($dao->fetch()) {
