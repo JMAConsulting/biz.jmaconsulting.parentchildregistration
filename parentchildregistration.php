@@ -387,13 +387,13 @@ function setChapRegCodes($params, $existingCodes = []) {
   if (!empty($params['chapter'])) {
     civicrm_api3('CustomValue', 'create', array(
       'entity_id' => $params['contact_id'],
-      'custom_' . $chapterId => $params['chapter'],
+      'custom_' . $chapterId => CRM_Core_DAO::VALUE_SEPARATOR . $params['chapter'] . CRM_Core_DAO::VALUE_SEPARATOR,
     ));
   }
   if (!empty($params['region'])) {
     civicrm_api3('CustomValue', 'create', array(
       'entity_id' => $params['contact_id'],
-      'custom_' . $regionId => $params['region'],
+      'custom_' . $regionId => CRM_Core_DAO::VALUE_SEPARATOR . $params['region'] . CRM_Core_DAO::VALUE_SEPARATOR,
     ));
   }
 }
