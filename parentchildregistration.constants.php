@@ -35,6 +35,13 @@ define('CHILD4GEN', 'custom_317');
 define('CHILDPRICE', 'price_38');
 define('PARENTPRICE', 'price_39');
 
+//SloZoo
+define('SLOZOO', 1462);
+define('CHILDUNDER', 'price_179');
+define('CHILDTHREE', 'price_180');
+define('CHILDPLUS', 'price_181');
+define('FREEPARENT', 'price_186');
+
 //Waivers
 define('WAIVER_1', 'custom_318');
 define('WAIVER_2', 'custom_319');

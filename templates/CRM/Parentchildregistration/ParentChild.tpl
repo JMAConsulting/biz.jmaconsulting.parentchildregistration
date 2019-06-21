@@ -1,6 +1,18 @@
 {literal}
 <script type="text/javascript">
 CRM.$(function($) {
+  var slozoo = 0;
+  {/literal}
+  {if $slozoo}
+    {literal}
+      var slozoo = 1;
+      var childunder = '{/literal}{$smarty.const.CHILDUNDER}{literal}';
+      var childthree = '{/literal}{$smarty.const.CHILDTHREE}{literal}';
+      var childplus = '{/literal}{$smarty.const.CHILDPLUS}{literal}';
+      var freeparent = '{/literal}{$smarty.const.FREEPARENT}{literal}';
+    {/literal}    
+  {/if}
+  {literal}
   var childprice = '{/literal}{$smarty.const.CHILDPRICE}{literal}';
   /* var parentprice = '{/literal}{$smarty.const.PARENTPRICE}{literal}';
 
@@ -37,7 +49,6 @@ CRM.$(function($) {
   var child3profile = 29;
   var child4profile = 33;
 
-
   /* $('.crm-profile-id-'+parent1profile).hide();
   $('.crm-profile-id-'+parent2profile).hide(); */
   $('.crm-profile-id-'+child1profile).hide();
@@ -47,6 +58,142 @@ CRM.$(function($) {
 
   // Children
   var selectedchildren = $('#'+childprice).select2('data');
+
+  // If SloZoo
+  if (slozoo) {
+    var childunderel = $('#'+childunder);
+    var childthreeel = $('#'+childthree);
+    var childplusel = $('#'+childplus);
+    var freeparentel = $('#'+freeparent);
+
+    var cunder = parseInt(childunderel.val()) || 0;
+    var cthree = parseInt(childthreeel.val()) || 0;
+    var cplus = parseInt(childplusel.val()) || 0;
+    var fparent = parseInt(freeparentel.val()) || 0;
+    var totalchildren = cunder + cthree + cplus;
+
+    if (totalchildren) {
+      if (totalchildren == 1) {
+        $('.crm-profile-id-'+child1profile).show();
+      }
+
+      if (totalchildren == 2) {
+        $('.crm-profile-id-'+child1profile).show();
+        $('.crm-profile-id-'+child2profile).show();
+      }
+
+      if (totalchildren == 3) {
+        $('.crm-profile-id-'+child1profile).show();
+        $('.crm-profile-id-'+child2profile).show();
+        $('.crm-profile-id-'+child3profile).show();
+      }
+
+      if (totalchildren >= 4) {
+        $('.crm-profile-id-'+child1profile).show();
+        $('.crm-profile-id-'+child2profile).show();
+        $('.crm-profile-id-'+child3profile).show();
+        $('.crm-profile-id-'+child4profile).show();
+      }
+    }
+
+    $(freeparentel).keyup(function() {
+      var cunder = parseInt(childunderel.val()) || 0;
+      var cthree = parseInt(childthreeel.val()) || 0;
+      var cplus = parseInt(childplusel.val()) || 0;
+      var fparent = parseInt(freeparentel.val()) || 0;
+      var totalchildren = cunder + cthree + cplus;
+      if (fparent > totalchildren) {
+        CRM.alert({/literal}'{ts escape="js"}Free Caregiver must be equal or less than # of tickets for children with ASD selected{/ts}'{literal});
+      }
+    });
+
+    $(childunderel).add(childthreeel).add(childplusel).keyup(function() {
+      var cunder = parseInt(childunderel.val()) || 0;
+      var cthree = parseInt(childthreeel.val()) || 0;
+      var cplus = parseInt(childplusel.val()) || 0;
+      var totalchildren = cunder + cthree + cplus;
+      if (totalchildren > 4) {
+        CRM.alert({/literal}'{ts escape="js"}Please select only upto 4 children with ASD{/ts}'{literal});
+      }
+      freeparentel.val(totalchildren);
+
+      if (totalchildren) {
+        if (totalchildren == 1) {
+          $('.crm-profile-id-'+child1profile).show();
+          $('#'+child2fn).val('');
+          $('#'+child2ln).val('');
+          $('#'+child2gen).select2('val', '');
+          $('#'+child2dob).val('');
+          $('#'+child2dob).next('input').datepicker('setDate', null);
+          $('.crm-profile-id-'+child2profile).hide();
+          $('#'+child3fn).val('');
+          $('#'+child3ln).val('');
+          $('#'+child3gen).select2('val', '');
+          $('#'+child3dob).val('');
+          $('#'+child3dob).next('input').datepicker('setDate', null);
+          $('.crm-profile-id-'+child3profile).hide();
+        }
+
+        if (totalchildren == 2) {
+          $('.crm-profile-id-'+child1profile).show();
+          $('.crm-profile-id-'+child2profile).show();
+          $('#'+child3fn).val('');
+          $('#'+child3ln).val('');
+          $('#'+child3gen).select2('val', '');
+          $('#'+child3dob).val('');
+          $('#'+child3dob).next('input').datepicker('setDate', null);
+          $('.crm-profile-id-'+child3profile).hide();
+          $('#'+child4fn).val('');
+          $('#'+child4ln).val('');
+          $('#'+child4gen).select2('val', '');
+          $('#'+child4dob).val('');
+          $('#'+child4dob).next('input').datepicker('setDate', null);
+          $('.crm-profile-id-'+child4profile).hide();
+        }
+
+        if (totalchildren == 3) {
+          $('.crm-profile-id-'+child1profile).show();
+          $('.crm-profile-id-'+child2profile).show();
+          $('.crm-profile-id-'+child3profile).show();
+          $('#'+child4fn).val('');
+          $('#'+child4ln).val('');
+          $('#'+child4gen).select2('val', '');
+          $('#'+child4dob).val('');
+          $('#'+child4dob).next('input').datepicker('setDate', null);
+          $('.crm-profile-id-'+child4profile).hide();
+        }
+
+        if (totalchildren >= 4) {
+          $('.crm-profile-id-'+child1profile).show();
+          $('.crm-profile-id-'+child2profile).show();
+          $('.crm-profile-id-'+child3profile).show();
+          $('.crm-profile-id-'+child4profile).show();          
+        }
+
+        if (totalchildren === 0) {
+          $('.crm-profile-id-'+child1profile).hide();
+          $('.crm-profile-id-'+child2profile).hide();
+          $('.crm-profile-id-'+child3profile).hide();
+          $('.crm-profile-id-'+child4profile).hide();
+          $('#'+child2fn).val('');
+          $('#'+child2ln).val('');
+          $('#'+child2gen).select2('val', '');
+          $('#'+child2dob).val('');
+          $('#'+child2dob).next('input').datepicker('setDate', null);
+          $('#'+child3fn).val('');
+          $('#'+child3ln).val('');
+          $('#'+child3gen).select2('val', '');
+          $('#'+child3dob).val('');
+          $('#'+child3dob).next('input').datepicker('setDate', null);
+          $('#'+child4fn).val('');
+          $('#'+child4ln).val('');
+          $('#'+child4gen).select2('val', '');
+          $('#'+child4dob).val('');
+          $('#'+child4dob).next('input').datepicker('setDate', null);
+        }
+      }
+    });
+  }
 
   if (selectedchildren) {
     if (selectedchildren.text == 1) {

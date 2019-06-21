@@ -128,6 +128,11 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
       'return.' . EVENT_TEMPLATE_ID => 1,
     ])['values'][$form->_eventId][EVENT_TEMPLATE_ID];
 
+    // Check if SLO Zoo Event.
+    if ($templateId == SLOZOO) {
+      $form->assign('slozoo', TRUE);
+    }
+
     if ($templateId) {
       // Add JS
       CRM_Core_Region::instance('page-body')->add(array(
@@ -171,6 +176,47 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
         }
       }
       $count++;
+    }
+    if (!empty($fields[CHILDUNDER]) || !empty($fields[CHILDTHREE]) || !empty($fields[CHILDPLUS])) {
+      $totalFields = $fields[CHILDUNDER] + $fields[CHILDTHREE] + $fields[CHILDPLUS];
+      if ($totalFields == 1) {
+        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        }
+      }
+      if ($totalFields == 2) {
+        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        }
+        if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+          $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+        }
+      }
+      if ($totalFields == 3) {
+        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        }
+        if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+          $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+        }
+        if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
+          $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+        }
+      }
+      if ($totalFields >= 4) {
+        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        }
+        if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+          $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+        }
+        if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
+          $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+        }
+        if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
+          $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+        }
+      }
     }
     if (!empty($fields[CHILDPRICE])) {
       switch ($fields[CHILDPRICE]) {
