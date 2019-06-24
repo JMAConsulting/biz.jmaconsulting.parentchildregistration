@@ -36,11 +36,11 @@ define('CHILDPRICE', 'price_38');
 define('PARENTPRICE', 'price_39');
 
 //SloZoo
-define('SLOZOO', 1462);
-define('CHILDUNDER', 'price_179');
-define('CHILDTHREE', 'price_180');
-define('CHILDPLUS', 'price_181');
-define('FREEPARENT', 'price_186');
+define('SLOZOO', 1509);
+define('CHILDUNDER', 'price_192');
+define('CHILDTHREE', 'price_193');
+define('CHILDPLUS', 'price_194');
+define('FREEPARENT', 'price_199');
 
 //Waivers
 define('WAIVER_1', 'custom_318');
