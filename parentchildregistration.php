@@ -133,6 +133,18 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
       $form->assign('slozoo', TRUE);
     }
 
+    // Check if SLO Var Event.
+    if ($templateId == SLOVAR) {
+      $form->assign('slovar', TRUE);
+      $priceSetId = CRM_Price_BAO_PriceSet::getFor('civicrm_event', $form->_eventId);
+      $childPrice = CRM_Core_DAO::executeQuery("SELECT id FROM civicrm_price_field WHERE name LIKE '%Children%' AND price_set_id = %1", [1 => [$priceSetId, "Integer"]])->fetchAll()[0]['id'];
+      $form->assign('childPrice', $childPrice);
+      // get list of values.
+      $priceValues = CRM_Core_DAO::executeQuery("SELECT id, name FROM civicrm_price_field_value WHERE price_field_id = %1", [1 => [$childPrice, "Integer"]])->fetchAll();
+      $form->assign('childPriceValues', $priceValues);
+    }
+
+
     if ($templateId) {
       // Add JS
       CRM_Core_Region::instance('page-body')->add(array(
@@ -177,6 +189,54 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
       }
       $count++;
     }
+    $varPrice = CRM_Core_Smarty::singleton()->get_template_vars('childPrice');
+    if (!empty($fields['price_'.$varPrice])) {
+      $priceVals = CRM_Core_Smarty::singleton()->get_template_vars('childPriceValues');
+      foreach ($priceVals as $prices) {
+        if ($fields['price_'.$varPrice] == $prices['id']) {
+          switch ($prices['name']) {
+            case 1:
+              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+              }
+            break;
+           case 2:
+              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+              }
+              if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+                $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+              }
+            break;
+            case 3:
+              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+              }
+              if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+                $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+              }
+              if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
+                $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+              }
+            break;
+            case 4:
+              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+              }
+              if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+                $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+              }
+              if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
+                $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+              }
+              if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
+                $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+              }
+            break;
+          }
+        }
+      }
+
     if (!empty($fields[CHILDUNDER]) || !empty($fields[CHILDTHREE]) || !empty($fields[CHILDPLUS])) {
       $totalFields = $fields[CHILDUNDER] + $fields[CHILDTHREE] + $fields[CHILDPLUS];
       if ($totalFields == 1) {

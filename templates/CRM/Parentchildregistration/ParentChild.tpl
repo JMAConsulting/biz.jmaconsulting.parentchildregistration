@@ -14,6 +14,14 @@ CRM.$(function($) {
   {/if}
   {literal}
   var childprice = '{/literal}{$smarty.const.CHILDPRICE}{literal}';
+  {/literal}
+  {if $slovar}
+    {literal}
+      var slovar = 1;
+      var childprice = '{/literal}price_{$childPrice}{literal}';
+    {/literal}
+  {/if}
+  {literal}
   /* var parentprice = '{/literal}{$smarty.const.PARENTPRICE}{literal}';
 
   var parent1fn = '{/literal}{$smarty.const.PARENT1FN}{literal}';

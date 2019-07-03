@@ -42,6 +42,9 @@ define('CHILDTHREE', 'price_193');
 define('CHILDPLUS', 'price_194');
 define('FREEPARENT', 'price_199');
 
+//SloVar
+define('SLOVAR', 1510);
+
 //Waivers
 define('WAIVER_1', 'custom_318');
 define('WAIVER_2', 'custom_319');
