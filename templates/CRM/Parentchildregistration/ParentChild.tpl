@@ -123,7 +123,7 @@ CRM.$(function($) {
       if (totalchildren > 4) {
         CRM.alert({/literal}'{ts escape="js"}Please select only upto 4 children with ASD{/ts}'{literal});
       }
-      freeparentel.val(totalchildren);
+      //freeparentel.val(totalchildren);
 
       if (totalchildren) {
         if (totalchildren == 1) {

@@ -236,6 +236,7 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
           }
         }
       }
+    }
 
     if (!empty($fields[CHILDUNDER]) || !empty($fields[CHILDTHREE]) || !empty($fields[CHILDPLUS])) {
       $totalFields = $fields[CHILDUNDER] + $fields[CHILDTHREE] + $fields[CHILDPLUS];
