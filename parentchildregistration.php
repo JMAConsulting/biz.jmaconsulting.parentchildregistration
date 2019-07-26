@@ -383,13 +383,13 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       if (in_array($person, ['child1', 'child2', 'child3', 'child4'])) {
         $params['contact_sub_type'] = 'Child';
       }
-      if ($person == 'child1') {
-        $params[LEAD_MEMBER] = 1;
-      }
       if ($cid) {
         $params['contact_id'] = $cid;
       }
       $contact[$person] = (array) civicrm_api3('Contact', 'create', $params)['id'];
+      if ($person == 'child1') {
+        $leadChildId = $contact[$person];
+      }
 
       // Check child contacts for date of first contact.
       if (strpos($person, 'child') !== false) {
@@ -439,6 +439,12 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
     // Create relationships
     $sibling = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Sibling of', 'id', 'name_a_b');
     $childRel = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Child of', 'id', 'name_a_b');
+
+    // Check if contact has child with lead family member. If he doesn't then add first child as lead member.
+    $isLeadFamilyPresent = CRM_Core_DAO::singleValueQuery("SELECT n.lead_family_member__28 FROM civicrm_value_newsletter_cu_3 n INNER JOIN civicrm_relationship r ON n.entity_id = r.contact_id_a WHERE r.relationship_type_id = 1 AND r.contact_id_b = %1 AND n.lead_family_member__28 = 1 LIMIT 1", [1 => [$parent, 'Integer']]);
+    if (empty($isLeadFamilyPresent)) {
+      civicrm_api3('Contact', 'create', ['id' => $leadChildId, LEAD_MEMBER => 1]);
+    }
 
     foreach ($contact as $person => $cid) {
       if (!empty($contact[$person])) {
