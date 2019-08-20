@@ -443,10 +443,12 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
     // Check if contact has child with lead family member. If he doesn't then add first child as lead member.
     $isLeadFamilyPresent = CRM_Core_DAO::singleValueQuery("SELECT n.lead_family_member__28 FROM civicrm_value_newsletter_cu_3 n INNER JOIN civicrm_relationship r ON n.entity_id = r.contact_id_a WHERE r.relationship_type_id = 1 AND r.contact_id_b = %1 AND n.lead_family_member__28 = 1 LIMIT 1", [1 => [$parent, 'Integer']]);
     if (empty($isLeadFamilyPresent)) {
-      if (is_array($leadChildId)) {
+      if (is_array($leadChildId) && !empty($leadChildId[0])) {
         $leadChildId = $leadChildId[0];
       }
-      civicrm_api3('Contact', 'create', ['id' => $leadChildId, LEAD_MEMBER => 1]);
+      if (!empty($leadChildId)) {
+        civicrm_api3('Contact', 'create', ['id' => $leadChildId, LEAD_MEMBER => 1]);
+      }
     }
 
     foreach ($contact as $person => $cid) {
