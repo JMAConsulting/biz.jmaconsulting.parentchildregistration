@@ -335,7 +335,7 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
     $templateId = civicrm_api3('Event', 'get', [
       'id' => $form->_eventId,
       'return.' . EVENT_TEMPLATE_ID => 1,
-    ])['values'][$form->_eventId]['custom_' . TEMPLATE_ID];
+    ])['values'][$form->_eventId][EVENT_TEMPLATE_ID];
     if (!$templateId) {
       return;
     }
