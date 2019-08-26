@@ -325,6 +325,24 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
 }
 
 /**
+ * Implements hook_civicrm_post().
+ *
+ */
+function parentchildregistration_civicrm_post($op, $objectName, $objectId, &$objectRef) {
+  if ($op == "edit" && $objectName == "Participant") {
+    if ($objectRef->status_id == 4) {
+      // Cancel related participants as well.
+      $registeredById = CRM_Core_DAO::executeQuery("SELECT id FROM civicrm_participant WHERE registered_by_id = %1", [1 => [$objectId, "Integer"]])->fetchAll();
+      if (!empty($registeredById)) {
+        foreach ($registeredById as $participantId) {
+          civicrm_api3('Participant', 'create', ['id' => $participantId['id'], 'status_id' => 4]);
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_civicrm_postProcess().
  *
  * @param string $formName
