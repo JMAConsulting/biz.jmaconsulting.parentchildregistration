@@ -39,6 +39,7 @@ Class CRM_CAGIS_Import {
         if (!$ufID) {
           $cmsName = strtolower($contact['first_name'] . '.' . $contact['last_name'] . '.' . $contact['id']);
           $params = [
+            'contactID' => $contact['id'],
             'cms_pass' => 'changeme',
             'cms_name' => $cmsName,
             'email' => $contact['email'],
