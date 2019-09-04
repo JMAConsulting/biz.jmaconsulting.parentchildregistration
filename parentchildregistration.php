@@ -128,23 +128,6 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
       'return.' . EVENT_TEMPLATE_ID => 1,
     ])['values'][$form->_eventId][EVENT_TEMPLATE_ID];
 
-    // Check if SLO Zoo Event.
-    if ($templateId == SLOZOO) {
-      $form->assign('slozoo', TRUE);
-    }
-
-    // Check if SLO Var Event.
-    if ($templateId == SLOVAR) {
-      $form->assign('slovar', TRUE);
-      $priceSetId = CRM_Price_BAO_PriceSet::getFor('civicrm_event', $form->_eventId);
-      $childPrice = CRM_Core_DAO::executeQuery("SELECT id FROM civicrm_price_field WHERE name LIKE '%Children%' AND price_set_id = %1", [1 => [$priceSetId, "Integer"]])->fetchAll()[0]['id'];
-      $form->assign('childPrice', $childPrice);
-      // get list of values.
-      $priceValues = CRM_Core_DAO::executeQuery("SELECT id, name FROM civicrm_price_field_value WHERE price_field_id = %1", [1 => [$childPrice, "Integer"]])->fetchAll();
-      $form->assign('childPriceValues', $priceValues);
-    }
-
-
     if ($templateId) {
       // Add JS
       CRM_Core_Region::instance('page-body')->add(array(
@@ -174,44 +157,19 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
     }
     $count = 1;
     $template = getEventTemplates($templateId);
-    while ($count < 8) {
-      $constant = constant('WAIVER_' . $count);
-      
-      if (empty($fields[$constant][1])) {
-        if ($count == 5) {
-          if (!in_array($template, ['SLO Skill Building', 'Workshop Behaviour', 'Workshop Communication', 'Workshop - Other', 'Workshop - Social'])) {
-            $errors[$constant] = ts('This field is required.');
-          } 
-        }
-        else {
-          $errors[$constant] = ts('This field is required.');
-        }
-      }
-      $count++;
-    }
+
     $varPrice = CRM_Core_Smarty::singleton()->get_template_vars('childPrice');
     if (!empty($fields['price_'.$varPrice])) {
       $priceVals = CRM_Core_Smarty::singleton()->get_template_vars('childPriceValues');
       foreach ($priceVals as $prices) {
         if ($fields['price_'.$varPrice] == $prices['id']) {
           switch ($prices['name']) {
-            case 1:
-              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-              }
-            break;
-           case 2:
-              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-              }
+           case 1:
               if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
                 $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
               }
             break;
-            case 3:
-              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-              }
+            case 2:
               if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
                 $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
               }
@@ -219,10 +177,7 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
                 $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
               }
             break;
-            case 4:
-              if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-              }
+            case 3:
               if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
                 $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
               }
@@ -238,6 +193,7 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
       }
     }
 
+/**
     if (!empty($fields[CHILDUNDER]) || !empty($fields[CHILDTHREE]) || !empty($fields[CHILDPLUS])) {
       $totalFields = $fields[CHILDUNDER] + $fields[CHILDTHREE] + $fields[CHILDPLUS];
       if ($totalFields == 1) {
@@ -279,25 +235,16 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
         }
       }
     }
+    */
+
     if (!empty($fields[CHILDPRICE])) {
       switch ($fields[CHILDPRICE]) {
-        case 59:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-          }
-        break;
-        case 60:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-          }
+        case 19:
           if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
             $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
           }
         break;
-        case 61:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-          }
+        case 20:
           if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
             $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
           }
@@ -305,10 +252,7 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
             $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
           }
         break;
-        case 74:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
-          }
+        case 21:
           if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
             $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
           }
@@ -349,6 +293,13 @@ function parentchildregistration_civicrm_post($op, $objectName, $objectId, &$obj
  * @param CRM_Core_Form $form
  */
 function parentchildregistration_civicrm_postProcess($formName, &$form) {
+  if ($formName == "CRM_Event_Form_ManageEvent_EventInfo" && !empty($form->getVar('_templateId'))) {
+    $eventId = CRM_Core_Session::singleton()->get('eventId');
+    civicrm_api3('CustomValue', 'create', [
+      'entity_id' => $eventId,
+      'custom_' . TEMPLATE_ID => $form->getVar('_templateId'),
+    ]);
+  }
   if ($formName == "CRM_Event_Form_Registration_Confirm") {
     $templateId = civicrm_api3('Event', 'get', [
       'id' => $form->_eventId,
@@ -357,35 +308,41 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
     if (!$templateId) {
       return;
     }
-    $parent = $form->_values['participant']['participant_contact_id'];
+    $child1 = $form->_values['participant']['participant_contact_id'];
+
+    $parentIds = [];
     $participantId = $form->getVar('_participantId');
 
     $address = civicrm_api3('Address', 'get', ['contact_id' => $parent])['values'];
 
     $relatedContacts = [
-      'child1' => [
-        'first_name' => $form->_values['params'][$participantId][CHILD1FN] ?: '',
-        'last_name' => $form->_values['params'][$participantId][CHILD1LN] ?: '',
-        'birth_date' => $form->_values['params'][$participantId][CHILD1DOB] ?: '',
-        'gender' => $form->_values['params'][$participantId][CHILD1GEN] ?: '',
+      'parent1' => [
+        'first_name' => $form->_values['params'][$participantId][PARENT1FN] ?: '',
+        'last_name' => $form->_values['params'][$participantId][PARENT1LN] ?: '',
+        'email' => $form->_values['params'][$participantId][PARENT1EMAIL] ?: '',
+      ],
+      'parent2' => [
+        'first_name' => $form->_values['params'][$participantId][PARENT2FN] ?: '',
+        'last_name' => $form->_values['params'][$participantId][PARENT2LN] ?: '',
+        'email' => $form->_values['params'][$participantId][PARENT2EMAIL] ?: '',
       ],
       'child2' => [
         'first_name' => $form->_values['params'][$participantId][CHILD2FN] ?: '',
         'last_name' => $form->_values['params'][$participantId][CHILD2LN] ?: '',
         'birth_date' => $form->_values['params'][$participantId][CHILD2DOB] ?: '',
-        'gender' => $form->_values['params'][$participantId][CHILD2GEN] ?: '',
+        'email' => $form->_values['params'][$participantId][CHILD2EMAIL] ?: '',
       ],
       'child3' => [
         'first_name' => $form->_values['params'][$participantId][CHILD3FN] ?: '',
         'last_name' => $form->_values['params'][$participantId][CHILD3LN] ?: '',
         'birth_date' => $form->_values['params'][$participantId][CHILD3DOB] ?: '',
-        'gender' => $form->_values['params'][$participantId][CHILD3GEN] ?: '',
+        'email' => $form->_values['params'][$participantId][CHILD3EMAIL] ?: '',
       ],
       'child4' => [
         'first_name' => $form->_values['params'][$participantId][CHILD4FN] ?: '',
         'last_name' => $form->_values['params'][$participantId][CHILD4LN] ?: '',
         'birth_date' => $form->_values['params'][$participantId][CHILD4DOB] ?: '',
-        'gender' => $form->_values['params'][$participantId][CHILD4GEN] ?: '',
+        'email' => $form->_values['params'][$participantId][CHILD4EMAIL] ?: '',
       ],
     ];
     foreach ($relatedContacts as $person => $params) {
@@ -394,36 +351,17 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       }
       $dedupeParams = CRM_Dedupe_Finder::formatParams($params, 'Individual');
       $dedupeParams['check_permission'] = FALSE;
-      $rule = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_dedupe_rule_group WHERE name = 'Child_Rule_10'");
+      $rule = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_dedupe_rule_group WHERE name = 'Child_Rule_8'");
       $dupes = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Individual', NULL, array(), $rule);
       $cid = CRM_Utils_Array::value('0', $dupes, NULL);
       $params['contact_type'] = 'Individual';
-      if (in_array($person, ['child1', 'child2', 'child3', 'child4'])) {
+      if (in_array($person, ['child2', 'child3', 'child4'])) {
         $params['contact_sub_type'] = 'Child';
       }
       if ($cid) {
         $params['contact_id'] = $cid;
       }
       $contact[$person] = (array) civicrm_api3('Contact', 'create', $params)['id'];
-      if ($person == 'child1') {
-        $leadChildId = $contact[$person];
-      }
-
-      // Check child contacts for date of first contact.
-      if (strpos($person, 'child') !== false) {
-	$isFilled = CRM_Core_DAO::executeQuery("SELECT entity_id FROM civicrm_value_newsletter_cu_3 WHERE entity_id IN (" . $contact[$person][0] . ") AND (first_contacted_358 IS NOT NULL OR first_contacted_358 != '')")->fetchAll();
-        if (empty($isFilled)) {
-          civicrm_api3('CustomValue', 'create', [
-            'entity_id' => $contact[$person][0],
-            'custom_29' => date('Ymd'),
-          ]);
-        }
-        // Add I am a person with ASD.
-        civicrm_api3('CustomValue', 'create', [
-          'entity_id' => $contact[$person][0],
-          'custom_7' => 'Une personne TSA',
-        ]);
-      }
 
       // Create participant record for child.
       civicrm_api3('Participant', 'create', [
@@ -439,9 +377,9 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
         $val['master_id'] = $k;
         civicrm_api3('Address', 'create', $address[$k]);
       }
- 
+
       if (!empty($form->_values['params'][$participantId]['postal_code-Primary'])) {
-        
+/**
         list($chapter, $region) = getChapRegCodes($form->_values['params'][$participantId]['postal_code-Primary']);
         if ($chapter || $region) {
           $cParams = [
@@ -452,42 +390,40 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
           setChapRegCodes($cParams);
         }
       }
+      **/
     }
 
     // Create relationships
     $sibling = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Sibling of', 'id', 'name_a_b');
     $childRel = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Child of', 'id', 'name_a_b');
 
-    // Check if contact has child with lead family member. If he doesn't then add first child as lead member.
-    $isLeadFamilyPresent = CRM_Core_DAO::singleValueQuery("SELECT n.lead_family_member__28 FROM civicrm_value_newsletter_cu_3 n INNER JOIN civicrm_relationship r ON n.entity_id = r.contact_id_a WHERE r.relationship_type_id = 1 AND r.contact_id_b = %1 AND n.lead_family_member__28 = 1 LIMIT 1", [1 => [$parent, 'Integer']]);
-    if (empty($isLeadFamilyPresent)) {
-      if (is_array($leadChildId) && !empty($leadChildId[0])) {
-        $leadChildId = $leadChildId[0];
-      }
-      if (!empty($leadChildId)) {
-        civicrm_api3('Contact', 'create', ['id' => $leadChildId, LEAD_MEMBER => 1]);
-      }
+    if (in_array($person, ['parent1', 'parent2'])) {
+      $parentIds[] = $contact[$person][0];
+      continue;
     }
 
     foreach ($contact as $person => $cid) {
       if (!empty($contact[$person])) {
-        createRelationship($contact[$person][0], $parent, $childRel);
+        foreach ($parentIds as $parentId) {
+          createRelationship($contact[$person][0], $parentId, $childRel);
+        }
       }
     }
 
     if (!empty($contact['child2'])) {
-      createRelationship($contact['child1'][0], $contact['child2'][0], $sibling);
+      createRelationship($child1, $contact['child2'][0], $sibling);
     }
     if (!empty($contact['child3'])) {
-      createRelationship($contact['child1'][0], $contact['child3'][0], $sibling);
+      createRelationship($child1, $contact['child3'][0], $sibling);
       createRelationship($contact['child2'][0], $contact['child3'][0], $sibling);
     }
     if (!empty($contact['child4'])) {
-      createRelationship($contact['child1'][0], $contact['child4'][0], $sibling);
+      createRelationship($child1, $contact['child4'][0], $sibling);
       createRelationship($contact['child2'][0], $contact['child4'][0], $sibling);
       createRelationship($contact['child3'][0], $contact['child4'][0], $sibling);
     }
   }
+}
 }
 
 function getChapRegCodes($postalCode) {
