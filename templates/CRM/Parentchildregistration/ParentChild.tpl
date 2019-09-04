@@ -72,6 +72,12 @@ CRM.$(function($) {
   $('#'+childprice).select2().on("change", function(e) {
     var noofchildren = e.added.text;
 
+    if (noofchildren == 1) {
+      $('.crm-profile-id-'+child2profile).hide();
+      $('.crm-profile-id-'+child3profile).hide();
+      $('.crm-profile-id-'+child4profile).hide();
+    }
+
     if (noofchildren == 2) {
       $('.crm-profile-id-'+child2profile).show();
       $('#'+child3fn).val('');
@@ -128,11 +134,11 @@ CRM.$(function($) {
   });
 
   // Parents
-  if ($('#'+parentprice).select2().text() == 1) {
+  if ($('#'+parentprice).select2('data').text == 1) {
     $('.crm-profile-id-'+parent1profile).show();
   }
 
-  if ($('#'+parentprice).select2().text() == 2) {
+  if ($('#'+parentprice).select2('data').text == 2) {
     $('.crm-profile-id-'+parent1profile).show();
     $('.crm-profile-id-'+parent2profile).show();
   }
