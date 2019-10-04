@@ -430,6 +430,8 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
         'contact_id' => $contact[$person][0],
         'event_id' => $form->_eventId,
         'registered_by_id' => $participantId,
+        'status_id' => 17,
+        'role_id' => 1,
       ]);
 
       // Add address for child.
