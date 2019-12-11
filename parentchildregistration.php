@@ -137,7 +137,7 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
     if ($templateId == SLOVAR) {
       $form->assign('slovar', TRUE);
       $priceSetId = CRM_Price_BAO_PriceSet::getFor('civicrm_event', $form->_eventId);
-      $childPrice = CRM_Core_DAO::executeQuery("SELECT id FROM civicrm_price_field WHERE name LIKE '%Children%' AND price_set_id = %1", [1 => [$priceSetId, "Integer"]])->fetchAll()[0]['id'];
+      $childPrice = CRM_Core_DAO::executeQuery("SELECT id FROM civicrm_price_field WHERE name LIKE '%Child%' AND price_set_id = %1", [1 => [$priceSetId, "Integer"]])->fetchAll()[0]['id'];
       $form->assign('childPrice', $childPrice);
       // get list of values.
       $priceValues = CRM_Core_DAO::executeQuery("SELECT id, name FROM civicrm_price_field_value WHERE price_field_id = %1", [1 => [$childPrice, "Integer"]])->fetchAll();
