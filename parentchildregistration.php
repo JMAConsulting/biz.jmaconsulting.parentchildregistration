@@ -162,7 +162,7 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
     }
 
 
-    if ($templateId) {
+    if ($templateId || $isActive) {
       // Add JS
       CRM_Core_Region::instance('page-body')->add(array(
         'template' => 'CRM/Parentchildregistration/ParentChild.tpl',
