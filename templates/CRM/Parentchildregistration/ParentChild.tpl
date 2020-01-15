@@ -1,6 +1,12 @@
+<div id="child_select" class="crm-section editrow_child_select-section form-item">
+    <div class="label">{$form.child_select.label}</div>
+    <div class="content">{$form.child_select.html}</div>
+</div>
 {literal}
 <script type="text/javascript">
 CRM.$(function($) {
+
+    $('#child_select').insertAfter('#editrow-email-Primary');
   var slozoo = 0;
   {/literal}
   {if $slozoo}
@@ -19,6 +25,12 @@ CRM.$(function($) {
     {literal}
       var slovar = 1;
       var childprice = '{/literal}price_{$childPrice}{literal}';
+    {/literal}
+  {/if}
+  {if $isMultipleChild}
+    {literal}
+      var multichild = 1;
+    var childprice = 'child_select';
     {/literal}
   {/if}
   {literal}
@@ -65,7 +77,7 @@ CRM.$(function($) {
   $('.crm-profile-id-'+child4profile).hide();
 
   // Children
-  var selectedchildren = $('#'+childprice).select2('data');
+  var selectedchildren = $('select#'+childprice).select2('data');
 
   // If SloZoo
   if (slozoo) {
@@ -228,7 +240,7 @@ CRM.$(function($) {
   }
 
 
-  $('#'+childprice).select2().on("change", function(e) { 
+  $('select#'+childprice).select2().on("change", function(e) {
     var noofchildren = e.added.text;
 
     if (noofchildren == 1) {

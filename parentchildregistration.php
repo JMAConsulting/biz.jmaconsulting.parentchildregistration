@@ -130,7 +130,7 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
     if (!empty($template[EVENT_TEMPLATE_ID])) {
       $templateId = $template[EVENT_TEMPLATE_ID];
     }
-
+    $isActive = FALSE;
     if (!empty($form->_eventId)) {
       $mulChild = new CRM_Multiplechildren_DAO_MultipleChildren();
       $mulChild->event_id = $form->_eventId;
@@ -141,28 +141,33 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
     }
 
     // Check if SLO Zoo Event.
-    if ($templateId == SLOZOO) {
+    if (!empty($templateId) && $templateId == SLOZOO) {
       $form->assign('slozoo', TRUE);
     }
 
     // Check if SLO Var Event.
-    if ($templateId == SLOVAR || $isActive) {
+    if ((!empty($templateId) && $templateId == SLOVAR) || $isActive) {
       $form->assign('slovar', TRUE);
       $priceSetId = CRM_Price_BAO_PriceSet::getFor('civicrm_event', $form->_eventId);
       if (!empty($priceSetId)) {
         $childPrice = CRM_Core_DAO::executeQuery("SELECT id FROM civicrm_price_field WHERE name LIKE '%Child%' AND price_set_id = %1", [1 => [$priceSetId, "Integer"]])->fetchAll()[0]['id'];
       }
       if (empty($childPrice) && $isActive) {
-        CRM_Core_Error::fatal("This event allows for multiple child registration, but does not have a child price field selected.");
+        // Add child dropdown
+        $form->add('select', 'child_select', ts('Are you bringing children to this event? If so, how many?'), [0 => '- none -', 1 => 1, 2 => 2, 3 => 3, 4 => 4], FALSE, ['class' => 'crm-select2']);
+        $form->assign('isMultipleChild', TRUE);
       }
-      $form->assign('childPrice', $childPrice);
       // get list of values.
-      $priceValues = CRM_Core_DAO::executeQuery("SELECT id, name FROM civicrm_price_field_value WHERE price_field_id = %1", [1 => [$childPrice, "Integer"]])->fetchAll();
-      $form->assign('childPriceValues', $priceValues);
+      if (!empty($childPrice)) {
+        $form->assign('childPrice', $childPrice);
+        $priceValues = CRM_Core_DAO::executeQuery("SELECT id, name FROM civicrm_price_field_value WHERE price_field_id = %1", [1 => [$childPrice, "Integer"]])->fetchAll();
+        $form->assign('childPriceValues', $priceValues);
+      }
     }
 
 
-    if ($templateId || $isActive) {
+
+    if (!empty($templateId) || $isActive) {
       // Add JS
       CRM_Core_Region::instance('page-body')->add(array(
         'template' => 'CRM/Parentchildregistration/ParentChild.tpl',
@@ -182,10 +187,13 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
  */
 function parentchildregistration_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   if ($formName == "CRM_Event_Form_Registration_Register") {
-    $templateId = civicrm_api3('Event', 'get', [
+    $template = civicrm_api3('Event', 'get', [
       'id' => $form->_eventId,
       'return.' . EVENT_TEMPLATE_ID => 1,
-    ])['values'][$form->_eventId][EVENT_TEMPLATE_ID];
+    ])['values'][$form->_eventId];
+    if (!empty($template[EVENT_TEMPLATE_ID])) {
+      $templateId = $template[EVENT_TEMPLATE_ID];
+    }
     if (!empty($form->_eventId)) {
       $mulChild = new CRM_Multiplechildren_DAO_MultipleChildren();
       $mulChild->event_id = $form->_eventId;
@@ -194,7 +202,7 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
         $isActive = TRUE;
       }
     }
-    if ($templateId) {
+    if (!empty($templateId)) {
       $count = 1;
       $template = getEventTemplates($templateId);
       while ($count < 8) {
@@ -212,7 +220,49 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
         $count++;
       }
     }
-    if ($templateId || $isActive) {
+    if (!empty($fields['child_select'])) {
+      switch($fields['child_select']) {
+        case 1:
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+          break;
+        case 2:
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          }
+          break;
+        case 3:
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          }
+          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          }
+          break;
+        case 4:
+          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          }
+          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          }
+          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          }
+          if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
+            $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+          }
+          break;
+      }
+    }
+    if (!empty($templateId)) {
       $varPrice = CRM_Core_Smarty::singleton()->get_template_vars('childPrice');
       if (!empty($fields['price_' . $varPrice])) {
         $priceVals = CRM_Core_Smarty::singleton()->get_template_vars('childPriceValues');
@@ -377,10 +427,13 @@ function parentchildregistration_civicrm_post($op, $objectName, $objectId, &$obj
  */
 function parentchildregistration_civicrm_postProcess($formName, &$form) {
   if ($formName == "CRM_Event_Form_Registration_Confirm") {
-    $templateId = civicrm_api3('Event', 'get', [
+    $template = civicrm_api3('Event', 'get', [
       'id' => $form->_eventId,
       'return.' . EVENT_TEMPLATE_ID => 1,
-    ])['values'][$form->_eventId][EVENT_TEMPLATE_ID];
+    ])['values'][$form->_eventId];
+    if (!empty($template[EVENT_TEMPLATE_ID])) {
+      $templateId = $template[EVENT_TEMPLATE_ID];
+    }
     if (!empty($form->_eventId)) {
       $mulChild = new CRM_Multiplechildren_DAO_MultipleChildren();
       $mulChild->event_id = $form->_eventId;
