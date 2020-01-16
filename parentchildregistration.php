@@ -442,7 +442,7 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
         $isActive = TRUE;
       }
     }
-    if (!$templateId || !$isActive) {
+    if (!$templateId && !$isActive) {
       return;
     }
     $parent = $form->_values['participant']['participant_contact_id'];

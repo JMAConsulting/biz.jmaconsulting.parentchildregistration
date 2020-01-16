@@ -6,7 +6,7 @@
 <script type="text/javascript">
 CRM.$(function($) {
 
-    $('#child_select').insertAfter('#editrow-email-Primary');
+  $('#child_select').insertAfter($('[id^=editrow-email-]'));
   var slozoo = 0;
   {/literal}
   {if $slozoo}
@@ -295,7 +295,7 @@ CRM.$(function($) {
       $('.crm-profile-id-'+child4profile).show();
     }
 
-    if (noofchildren == '- select -') {
+    if (noofchildren == '- select -' || noofchildren == '- none -') {
       $('.crm-profile-id-'+child1profile).hide();
       $('.crm-profile-id-'+child2profile).hide();
       $('.crm-profile-id-'+child3profile).hide();
