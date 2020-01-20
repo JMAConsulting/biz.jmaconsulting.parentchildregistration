@@ -219,8 +219,8 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
         else {
           $errors[$constant] = ts('This field is required.');
         }
+        $count++;
       }
-      $count++;
     }
     if (!empty($fields['child_select'])) {
       switch($fields['child_select']) {
