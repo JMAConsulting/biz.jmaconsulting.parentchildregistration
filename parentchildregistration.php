@@ -207,17 +207,14 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
       while ($count < 8) {
         $constant = constant('WAIVER_' . $count);
 
-        if (empty($fields[$constant][1])) {
+        if (empty($fields[$constant][1]) && defined('WAIVER_' . $count)) {
           if ($count == 5) {
             if (!in_array($template, ['SLO Skill Building', 'Workshop Behaviour', 'Workshop Communication', 'Workshop - Other', 'Workshop - Social'])) {
               $errors[$constant] = ts('This field is required.');
             }
           } else {
             $errors[$constant] = ts('This field is required.');
-          } 
-        }
-        else {
-          $errors[$constant] = ts('This field is required.');
+          }
         }
         $count++;
       }
@@ -529,9 +526,9 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
         $val['master_id'] = $k;
         civicrm_api3('Address', 'create', $address[$k]);
       }
- 
+
       if (!empty($form->_values['params'][$participantId]['postal_code-Primary'])) {
-        
+
         list($chapter, $region) = getChapRegCodes($form->_values['params'][$participantId]['postal_code-Primary']);
         if ($chapter || $region) {
           $cParams = [
