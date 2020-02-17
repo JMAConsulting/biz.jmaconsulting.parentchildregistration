@@ -3,6 +3,8 @@ require_once 'parentchildregistration.constants.php';
 
 require_once 'parentchildregistration.civix.php';
 
+use CRM_Parentchildregistration_ExtensionUtil as E;
+
 /**
  * Implementation of hook_civicrm_config
  *
@@ -154,7 +156,7 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
       }
       if (empty($childPrice) && $isActive) {
         // Add child dropdown
-        $form->add('select', 'child_select', ts('Are you bringing children to this event? If so, how many?'), [0 => '- none -', 1 => 1, 2 => 2, 3 => 3, 4 => 4], FALSE, ['class' => 'crm-select2']);
+        $form->add('select', 'child_select', E::ts('Are you bringing children to this event? If so, how many?'), [0 => '- none -', 1 => 1, 2 => 2, 3 => 3, 4 => 4], FALSE, ['class' => 'crm-select2']);
         $form->assign('isMultipleChild', TRUE);
       }
       // get list of values.
@@ -210,10 +212,10 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
         if (empty($fields[$constant][1]) && defined('WAIVER_' . $count)) {
           if ($count == 5) {
             if (!in_array($template, ['SLO Skill Building', 'Workshop Behaviour', 'Workshop Communication', 'Workshop - Other', 'Workshop - Social'])) {
-              $errors[$constant] = ts('This field is required.');
+              $errors[$constant] = E::ts('This field is required.');
             }
           } else {
-            $errors[$constant] = ts('This field is required.');
+            $errors[$constant] = E::ts('This field is required.');
           }
         }
         $count++;
@@ -222,41 +224,71 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
     if (!empty($fields['child_select'])) {
       switch($fields['child_select']) {
         case 1:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
+          }
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
           }
           break;
         case 2:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
+          }
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+          }
+          if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+            $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
           }
           break;
         case 3:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
           }
-          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+          }
+          if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+            $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+          }
+          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+          }
+          if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+            $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
           }
           break;
         case 4:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
           }
-          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
           }
-          if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
-            $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+          if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+            $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+          }
+          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+          }
+          if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+            $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
+          }
+          if (empty($fields[CHILD4FN]) || empty($fields[CHILD4LN])) {
+            $errors[CHILD4FN] = E::ts('First and last name of child 4 must be entered.');
+          }
+          if (!empty($fields[CHILD4DOB]) && $fields[CHILD4DOB] > date('Y-m-d')) {
+            $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
           }
           break;
       }
@@ -269,41 +301,71 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
           if ($fields['price_' . $varPrice] == $prices['id']) {
             switch ($prices['name']) {
               case 1:
-                if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                  $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+                if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+                  $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
+                }
+                if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+                  $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
                 }
                 break;
               case 2:
-                if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                  $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+                if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+                  $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
                 }
-                if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-                  $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+                if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+                  $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
+                }
+                if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+                  $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+                }
+                if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+                  $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
                 }
                 break;
               case 3:
-                if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                  $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+                if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+                  $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
                 }
-                if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-                  $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+                if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+                  $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
                 }
-                if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-                  $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+                if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+                  $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+                }
+                if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+                  $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+                }
+                if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+                  $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+                }
+                if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+                  $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
                 }
                 break;
               case 4:
-                if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-                  $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+                if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+                  $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
                 }
-                if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-                  $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+                if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+                  $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
                 }
-                if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-                  $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+                if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+                  $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
                 }
-                if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
-                  $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+                if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+                  $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+                }
+                if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+                  $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+                }
+                if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+                  $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
+                }
+                if (empty($fields[CHILD4FN]) || empty($fields[CHILD4LN])) {
+                  $errors[CHILD4FN] = E::ts('First and last name of child 4 must be entered.');
+                }
+                if (!empty($fields[CHILD4DOB]) && $fields[CHILD4DOB] > date('Y-m-d')) {
+                  $errors[CHILD4DOB] = E::ts('Date of birth of child 4 must not be before today');
                 }
                 break;
             }
@@ -315,82 +377,142 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
     if (!empty($fields[CHILDUNDER]) || !empty($fields[CHILDTHREE]) || !empty($fields[CHILDPLUS])) {
       $totalFields = $fields[CHILDUNDER] + $fields[CHILDTHREE] + $fields[CHILDPLUS];
       if ($totalFields == 1) {
-        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
+        }
+        if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+          $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
         }
       }
       if ($totalFields == 2) {
-        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
         }
-        if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-          $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+        if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+          $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
+        }
+        if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+          $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+        }
+        if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+          $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
         }
       }
       if ($totalFields == 3) {
-        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
         }
-        if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-          $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+        if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+          $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
         }
-        if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-          $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+        if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+          $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+        }
+        if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+          $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+        }
+        if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+          $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+        }
+        if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+          $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
         }
       }
       if ($totalFields >= 4) {
-        if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-          $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+        if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+          $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
         }
-        if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-          $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+        if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+          $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
         }
-        if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-          $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+        if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+          $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
         }
-        if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
-          $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+        if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+          $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+        }
+        if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+          $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+        }
+        if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+          $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
+        }
+        if (empty($fields[CHILD4FN]) || empty($fields[CHILD4LN])) {
+          $errors[CHILD4FN] = E::ts('First and last name of child 4 must be entered.');
+        }
+        if (!empty($fields[CHILD4DOB]) && $fields[CHILD4DOB] > date('Y-m-d')) {
+          $errors[CHILD4DOB] = E::ts('Date of birth of child 4 must not be before today');
         }
       }
     }
     if (!empty($fields[CHILDPRICE])) {
       switch ($fields[CHILDPRICE]) {
         case 59:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
+          }
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
           }
         break;
         case 60:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
+          }
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+          }
+          if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+            $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
           }
         break;
         case 61:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
           }
-          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
+          }
+          if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+            $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+          }
+          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+          }
+          if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+            $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
           }
         break;
         case 74:
-          if (empty($fields[CHILD1FN]) && empty($fields[CHILD1LN])) {
-            $errors[CHILD1FN] = ts('First and last name of child 1 must be entered.');
+          if (empty($fields[CHILD1FN]) || empty($fields[CHILD1LN])) {
+            $errors[CHILD1FN] = E::ts('First and last name of child 1 must be entered.');
           }
-          if (empty($fields[CHILD2FN]) && empty($fields[CHILD2LN])) {
-            $errors[CHILD2FN] = ts('First and last name of child 2 must be entered.');
+          if (!empty($fields[CHILD1DOB]) && $fields[CHILD1DOB] > date('Y-m-d')) {
+            $errors[CHILD1DOB] = E::ts('Date of birth of child 1 must not be before today');
           }
-          if (empty($fields[CHILD3FN]) && empty($fields[CHILD3LN])) {
-            $errors[CHILD3FN] = ts('First and last name of child 3 must be entered.');
+          if (empty($fields[CHILD2FN]) || empty($fields[CHILD2LN])) {
+            $errors[CHILD2FN] = E::ts('First and last name of child 2 must be entered.');
           }
-          if (empty($fields[CHILD4FN]) && empty($fields[CHILD4LN])) {
-            $errors[CHILD4FN] = ts('First and last name of child 4 must be entered.');
+          if (!empty($fields[CHILD2DOB]) && $fields[CHILD2DOB] > date('Y-m-d')) {
+            $errors[CHILD2DOB] = E::ts('Date of birth of child 2 must not be before today');
+          }
+          if (empty($fields[CHILD3FN]) || empty($fields[CHILD3LN])) {
+            $errors[CHILD3FN] = E::ts('First and last name of child 3 must be entered.');
+          }
+          if (!empty($fields[CHILD3DOB]) && $fields[CHILD3DOB] > date('Y-m-d')) {
+            $errors[CHILD3DOB] = E::ts('Date of birth of child 3 must not be before today');
+          }
+          if (empty($fields[CHILD4FN]) || empty($fields[CHILD4LN])) {
+            $errors[CHILD4FN] = E::ts('First and last name of child 4 must be entered.');
+          }
+          if (!empty($fields[CHILD4DOB]) && $fields[CHILD4DOB] > date('Y-m-d')) {
+            $errors[CHILD4DOB] = E::ts('Date of birth of child 4 must not be before today');
           }
         break;
       }
