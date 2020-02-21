@@ -125,7 +125,7 @@ function checkTemplate($id) {
  */
 function parentchildregistration_civicrm_buildForm($formName, &$form) {
   if ($formName == "CRM_Event_Form_Registration_Register") {
-    $templateId = civicrm_api3('Event', 'get', [
+    $template = civicrm_api3('Event', 'get', [
       'id' => $form->_eventId,
       'return.' . EVENT_TEMPLATE_ID => 1,
     ])['values'][$form->_eventId];

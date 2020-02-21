@@ -78,6 +78,38 @@ CRM.$(function($) {
 
   // Children
   var selectedchildren = $('select#'+childprice).select2('data');
+  
+  {/literal}
+    {if $waitlistchild}
+      {literal}
+        var waitchildren = '{/literal}{$waitlistchild}{literal}';
+      {/literal}
+    {/if}
+  {literal}
+
+  if (waitchildren) {
+    if (waitchildren == 1) {
+      $('.crm-profile-id-'+child1profile).show();
+    }
+
+    if (waitchildren == 2) {
+      $('.crm-profile-id-'+child1profile).show();
+      $('.crm-profile-id-'+child2profile).show();
+    }
+
+    if (waitchildren == 3) {
+      $('.crm-profile-id-'+child1profile).show();
+      $('.crm-profile-id-'+child2profile).show();
+      $('.crm-profile-id-'+child3profile).show();
+    }
+
+    if (waitchildren == 4) {
+      $('.crm-profile-id-'+child1profile).show();
+      $('.crm-profile-id-'+child2profile).show();
+      $('.crm-profile-id-'+child3profile).show();
+      $('.crm-profile-id-'+child4profile).show();
+    }
+  }
 
   // If SloZoo
   if (slozoo) {
