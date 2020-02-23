@@ -84,6 +84,10 @@ CRM.$(function($) {
       {literal}
         var waitchildren = '{/literal}{$waitlistchild}{literal}';
       {/literal}
+    {else}
+      {literal}
+        var waitchildren = false;
+      {/literal}
     {/if}
   {literal}
 
