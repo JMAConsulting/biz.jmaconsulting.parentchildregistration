@@ -155,8 +155,6 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
     if (!$templateId) {
       return;
     }
-    $count = 1;
-    $template = getEventTemplates($templateId);
 
     $varPrice = CRM_Core_Smarty::singleton()->get_template_vars('childPrice');
     if (!empty($fields['price_'.$varPrice])) {
@@ -294,10 +292,10 @@ function parentchildregistration_civicrm_post($op, $objectName, $objectId, &$obj
  */
 function parentchildregistration_civicrm_postProcess($formName, &$form) {
   if ($formName == "CRM_Event_Form_ManageEvent_EventInfo" && !empty($form->getVar('_templateId'))) {
-    $eventId = CRM_Core_Session::singleton()->get('eventId');
+    $eventId = $form->get('id');
     civicrm_api3('CustomValue', 'create', [
       'entity_id' => $eventId,
-      'custom_' . TEMPLATE_ID => $form->getVar('_templateId'),
+      EVENT_TEMPLATE_ID => $form->getVar('_templateId'),
     ]);
   }
   if ($formName == "CRM_Event_Form_Registration_Confirm") {
