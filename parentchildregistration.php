@@ -132,15 +132,6 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
     if (!empty($template[EVENT_TEMPLATE_ID])) {
       $templateId = $template[EVENT_TEMPLATE_ID];
     }
-    $isActive = FALSE;
-    if (!empty($form->_eventId)) {
-      $mulChild = new CRM_Multiplechildren_DAO_MultipleChildren();
-      $mulChild->event_id = $form->_eventId;
-      $mulChild->find(TRUE);
-      if ($mulChild->multiple_child) {
-        $isActive = TRUE;
-      }
-    }
 
     // Check if SLO Zoo Event.
     if (!empty($templateId) && $templateId == SLOZOO) {
@@ -148,16 +139,11 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
     }
 
     // Check if SLO Var Event.
-    if ((!empty($templateId) && $templateId == SLOVAR) || $isActive) {
+    if ((!empty($templateId) && $templateId == SLOVAR)) {
       $form->assign('slovar', TRUE);
       $priceSetId = CRM_Price_BAO_PriceSet::getFor('civicrm_event', $form->_eventId);
       if (!empty($priceSetId)) {
         $childPrice = CRM_Core_DAO::executeQuery("SELECT id FROM civicrm_price_field WHERE name LIKE '%Child%' AND price_set_id = %1", [1 => [$priceSetId, "Integer"]])->fetchAll()[0]['id'];
-      }
-      if (empty($childPrice) && $isActive) {
-        // Add child dropdown
-        $form->add('select', 'child_select', E::ts('Are you bringing children to this event? If so, how many?'), [0 => '- none -', 1 => 1, 2 => 2, 3 => 3, 4 => 4], FALSE, ['class' => 'crm-select2']);
-        $form->assign('isMultipleChild', TRUE);
       }
       // get list of values.
       if (!empty($childPrice)) {
@@ -168,7 +154,7 @@ function parentchildregistration_civicrm_buildForm($formName, &$form) {
     }
 
 
-    if (!empty($templateId) || $isActive) {
+    if (!empty($templateId)) {
       // Add JS
       CRM_Core_Region::instance('page-body')->add(array(
         'template' => 'CRM/Parentchildregistration/ParentChild.tpl',
@@ -194,14 +180,6 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
     ])['values'][$form->_eventId];
     if (!empty($template[EVENT_TEMPLATE_ID])) {
       $templateId = $template[EVENT_TEMPLATE_ID];
-    }
-    if (!empty($form->_eventId)) {
-      $mulChild = new CRM_Multiplechildren_DAO_MultipleChildren();
-      $mulChild->event_id = $form->_eventId;
-      $mulChild->find(TRUE);
-      if ($mulChild->multiple_child) {
-        $isActive = TRUE;
-      }
     }
     if (!empty($templateId)) {
       $count = 1;
@@ -553,21 +531,17 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
     if (!empty($template[EVENT_TEMPLATE_ID])) {
       $templateId = $template[EVENT_TEMPLATE_ID];
     }
-    if (!empty($form->_eventId)) {
-      $mulChild = new CRM_Multiplechildren_DAO_MultipleChildren();
-      $mulChild->event_id = $form->_eventId;
-      $mulChild->find(TRUE);
-      if ($mulChild->multiple_child) {
-        $isActive = TRUE;
-      }
-    }
-    if (!$templateId && !$isActive) {
+    if (!$templateId) {
       return;
     }
     $parent = $form->_values['participant']['participant_contact_id'];
     $participantId = $form->getVar('_participantId');
 
     $address = civicrm_api3('Address', 'get', ['contact_id' => $parent])['values'];
+
+    if (empty($form->_values['params'][$participantId][CHILD1FN])) {
+      return;
+    }
 
     $relatedContacts = [
       'child1' => [
