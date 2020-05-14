@@ -189,7 +189,7 @@ function parentchildregistration_civicrm_validateForm($formName, &$fields, &$fil
 
         if (empty($fields[$constant][1]) && defined('WAIVER_' . $count)) {
           if ($count == 5) {
-            if (!in_array($template, ['SLO Skill Building', 'Workshop Behaviour', 'Workshop Communication', 'Workshop - Other', 'Workshop - Social'])) {
+            if (!in_array($template, ['SLO Skill Building', 'Workshop Behaviour', 'Workshop Communication', 'Workshop - Other', 'Workshop - Social', 'Webinar - Live'])) {
               $errors[$constant] = E::ts('This field is required.');
             }
           } else {
