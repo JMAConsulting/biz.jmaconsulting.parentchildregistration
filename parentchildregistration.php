@@ -362,11 +362,21 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       $contact[$person] = (array) civicrm_api3('Contact', 'create', $params)['id'];
 
       // Create participant record for child.
-      civicrm_api3('Participant', 'create', [
+      $params =  [
         'contact_id' => $contact[$person][0],
         'event_id' => $form->_eventId,
         'registered_by_id' => $participantId,
-      ]);
+        'stauts_id' => 'additional_participant',
+        'role_id' => 1,
+      ];
+      // If the parent is staying add them so that they count.
+      if ($person === 'parent1' && !empty($params[PARENT1_STAYING])) {
+        $params['status_id'] = 'Registered';
+      }
+      if ($person === 'parent2'  && !empty($params[PARENT2_STAYING])) {
+        $params['status_id'] = 'Registered';
+      }
+      civicrm_api3('Participant', 'create', $params);
 
       // Add address for child.
       foreach ($address as $k => &$val) {
