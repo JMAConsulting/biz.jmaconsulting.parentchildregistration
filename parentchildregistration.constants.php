@@ -54,4 +54,5 @@ define('FREEPARENT', 'price_199');
 
 //SloVar
 define('SLOVAR', 1510);
-define('PARENT_STAYING', 'custom_74');
+define('PARENT1_STAYING', 'custom_74');
+define('PARENT2_STAYING', 'custom_85');

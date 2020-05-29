@@ -4,7 +4,7 @@ return [
   [
     'module' => 'biz.jmaconsulting.parentchildregistration',
     'name' => 'Additional Participant Registration Status',
-    'update' => 'always',
+    'update' => 'never',
     'entity' => 'ParticipantStatusType',
     'params' => [
       'version' => 3,

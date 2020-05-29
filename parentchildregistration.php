@@ -366,14 +366,14 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
         'contact_id' => $contact[$person][0],
         'event_id' => $form->_eventId,
         'registered_by_id' => $participantId,
-        'stauts_id' => 'additional_participant',
+        'status_id' => 'additional_participant',
         'role_id' => 1,
       ];
       // If the parent is staying add them so that they count.
-      if ($person === 'parent1' && !empty($params[PARENT1_STAYING])) {
+      if ($person == 'parent1' && !empty($form->_values['params'][$participantId][PARENT1_STAYING])) {
         $params['status_id'] = 'Registered';
       }
-      if ($person === 'parent2'  && !empty($params[PARENT2_STAYING])) {
+      if ($person == 'parent2'  && !empty($form->_values['params'][$participantId][PARENT2_STAYING])) {
         $params['status_id'] = 'Registered';
       }
       civicrm_api3('Participant', 'create', $params);
@@ -407,17 +407,25 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
 
     if (in_array($person, ['parent1', 'parent2'])) {
       $parentIds[] = $contact[$person][0];
-      continue;
     }
 
+    // Relationships for child1 with parents
+    foreach ($parentIds as $parentId) {
+      createRelationship($child1, $parentId, $childRel);
+    }
+
+    // Relationships for rest of children with parents
     foreach ($contact as $person => $cid) {
       if (!empty($contact[$person])) {
         foreach ($parentIds as $parentId) {
-          createRelationship($contact[$person][0], $parentId, $childRel);
+          if (in_array($person, ['child2', 'child3', 'child4'])) {
+            createRelationship($contact[$person][0], $parentId, $childRel);
+          }
         }
       }
     }
 
+    // Sibling relationships
     if (!empty($contact['child2'])) {
       createRelationship($child1, $contact['child2'][0], $sibling);
     }
