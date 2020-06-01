@@ -307,7 +307,6 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       return;
     }
     $child1 = $form->_values['participant']['participant_contact_id'];
-
     $parentIds = [];
     $participantId = $form->getVar('_participantId');
 
@@ -377,7 +376,7 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       civicrm_api3('Participant', 'create', $params);
 
       // Add address for child.
-      $address = civicrm_api3('Address', 'get', ['contact_id' => $contact['parent1']])['values'];
+      $address = civicrm_api3('Address', 'get', ['contact_id' => $contact['parent1'][0]])['values'];
       if ($person !== 'parent1') {
         foreach ($address as $k => &$val) {
           $check = civicrm_api3('Address', 'get', ['contact_id' => $contact[$person][0], 'master_id' => $k]);

@@ -54,17 +54,50 @@ CRM.$(function($) {
   if (selectedchildren) {
     if (selectedchildren.text == 2) {
       $('.crm-profile-id-'+child2profile).show();
+      $('#'+child3fn).val('');
+      $('#'+child3ln).val('');
+      $('#'+child3email).val('');
+      $('#'+child3dob).val('');
+      $('#'+child3dob).next('input').datepicker('setDate', null);
+      $('#'+child4fn).val('');
+      $('#'+child4ln).val('');
+      $('#'+child4email).val('');
+      $('#'+child4dob).val('');
+      $('#'+child4dob).next('input').datepicker('setDate', null);
     }
 
     if (selectedchildren.text == 3) {
       $('.crm-profile-id-'+child2profile).show();
       $('.crm-profile-id-'+child3profile).show();
+      $('#'+child4fn).val('');
+      $('#'+child4ln).val('');
+      $('#'+child4email).val('');
+      $('#'+child4dob).val('');
+      $('#'+child4dob).next('input').datepicker('setDate', null);
     }
 
     if (selectedchildren.text == 4) {
       $('.crm-profile-id-'+child2profile).show();
       $('.crm-profile-id-'+child3profile).show();
       $('.crm-profile-id-'+child4profile).show();
+    }
+
+    if (selectedchildren.text == 1) {
+      $('#'+child2fn).val('');
+      $('#'+child2ln).val('');
+      $('#'+child2email).select2('val', '');
+      $('#'+child2dob).val('');
+      $('#'+child2dob).next('input').datepicker('setDate', null);
+      $('#'+child3fn).val('');
+      $('#'+child3ln).val('');
+      $('#'+child3email).val('');
+      $('#'+child3dob).val('');
+      $('#'+child3dob).next('input').datepicker('setDate', null);
+      $('#'+child4fn).val('');
+      $('#'+child4ln).val('');
+      $('#'+child4email).val('');
+      $('#'+child4dob).val('');
+      $('#'+child4dob).next('input').datepicker('setDate', null);
     }
   }
 
@@ -76,6 +109,21 @@ CRM.$(function($) {
       $('.crm-profile-id-'+child2profile).hide();
       $('.crm-profile-id-'+child3profile).hide();
       $('.crm-profile-id-'+child4profile).hide();
+      $('#'+child2fn).val('');
+      $('#'+child2ln).val('');
+      $('#'+child2email).select2('val', '');
+      $('#'+child2dob).val('');
+      $('#'+child2dob).next('input').datepicker('setDate', null);
+      $('#'+child3fn).val('');
+      $('#'+child3ln).val('');
+      $('#'+child3email).val('');
+      $('#'+child3dob).val('');
+      $('#'+child3dob).next('input').datepicker('setDate', null);
+      $('#'+child4fn).val('');
+      $('#'+child4ln).val('');
+      $('#'+child4email).val('');
+      $('#'+child4dob).val('');
+      $('#'+child4dob).next('input').datepicker('setDate', null);
     }
 
     if (noofchildren == 2) {
@@ -136,6 +184,9 @@ CRM.$(function($) {
   // Parents
   if ($('#'+parentprice).select2('data').text == 1) {
     $('.crm-profile-id-'+parent1profile).show();
+    $('#'+parent2fn).val('');
+    $('#'+parent2ln).val('');
+    $('#'+parent2email).val('');
   }
 
   if ($('#'+parentprice).select2('data').text == 2) {
