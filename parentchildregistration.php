@@ -340,6 +340,55 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
         'email' => $form->_values['params'][$participantId][CHILD4EMAIL] ?: '',
       ],
     ];
+    // Create relationships
+    $sibling = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Sibling of', 'id', 'name_a_b');
+    $childRel = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Child of', 'id', 'name_a_b');
+
+    $children = civicrm_api3('Relationship', 'get', [
+      'relationship_type_id' => $sibling,
+      'contact_id_a' => $child1,
+      'sequential' => 1,
+      'options' => ['limit' => 3, 'sort' => 'id ASC'],
+      'api.Contact.get' => ['id' => "\$value.contact_id_b", 'sequential' => 1],
+    ])['values'];
+    $parents = civicrm_api3('Relationship', 'get', [
+      'relationship_type_id' => $childRel,
+      'contact_id_a' => $child1,
+      'sequential' => 1,
+      'options' => ['limit' => 2, 'sort' => 'id ASC'],
+      'api.Contact.get' => ['id' => "\$value.contact_id_b", 'sequential' => 1],
+    ])['values'];
+    $restoreInformation = ['id' => $child1];
+    foreach ($relatedContacts as $person => $params) {
+      if ($person == 'parent1' && !empty($parents[0])) {
+        $relatedContacts[$person]['contact_id'] = $parent[0]['contact_id_b'];
+        $restoreInformation[PARENT1FN] = $parents['api.Contact.get']['values'][0]['first_name'];
+        $restoreInformation[PARENT1LN] = $parents['api.Contact.get']['values'][0]['last_name'];
+      }
+      if ($person == 'parent2' && !empty($parents[1])) {
+        $relatedContacts[$person]['contact_id'] = $parent[1]['contact_id_b'];
+        $restoreInformation[PARENT2FN] = $parents['api.Contact.get']['values'][1]['first_name'];
+        $restoreInformation[PARENT2LN] = $parents['api.Contact.get']['values'][1]['last_name'];
+      }
+      if ($person == 'child2' && !empty($children[0])) {
+        $relatedContacts[$person]['contact_id'] = $children[0]['contact_id_b'];
+        $restoreInformation[CHILD2FN] = $children['api.Contact.get']['values'][0]['first_name'];
+        $restoreInformation[CHILD2LN] = $children['api.Contact.get']['values'][0]['last_name'];
+        $restoreInformation[CHILD2DOB] = $children['api.Contact.get']['values'][0]['birth_date'];
+      }
+      if ($person == 'child3' && !empty($children[1])) {
+        $relatedContacts[$person]['contact_id'] = $children[1]['contact_id_b'];
+        $restoreInformation[CHILD3FN] = $children['api.Contact.get']['values'][1]['first_name'];
+        $restoreInformation[CHILD3LN] = $children['api.Contact.get']['values'][1]['last_name'];
+        $restoreInformation[CHILD3DOB] = $children['api.Contact.get']['values'][1]['birth_date'];
+      }
+      if ($person == 'child4' && !empty($children[2])) {
+        $relatedContacts[$person]['contact_id'] = $children[2]['contact_id_b'];
+        $restoreInformation[CHILD4FN] = $children['api.Contact.get']['values'][2]['first_name'];
+        $restoreInformation[CHILD4LN] = $children['api.Contact.get']['values'][2]['last_name'];
+        $restoreInformation[CHILD4DOB] = $children['api.Contact.get']['values'][2]['birth_date'];
+      }
+    }
     foreach ($relatedContacts as $person => $params) {
       if (empty($params['first_name']) && empty($params['last_name'])) {
         continue;
@@ -348,7 +397,7 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       $dedupeParams['check_permission'] = FALSE;
       $rule = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_dedupe_rule_group WHERE name = 'Child_Rule_8'");
       $dupes = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Individual', NULL, array(), $rule);
-      $cid = CRM_Utils_Array::value('0', $dupes, NULL);
+      $cid = CRM_Utils_Array::value('0', $dupes, CRM_Utils_Array::value('contact_id', $params));
       $params['contact_type'] = 'Individual';
       if (in_array($person, ['child2', 'child3', 'child4'])) {
         $params['contact_sub_type'] = 'Child';
@@ -415,10 +464,6 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       **/
     }
 
-    // Create relationships
-    $sibling = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Sibling of', 'id', 'name_a_b');
-    $childRel = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Child of', 'id', 'name_a_b');
-
     if (in_array($person, ['parent1', 'parent2'])) {
       $parentIds[] = $contact[$person][0];
     }
@@ -453,6 +498,9 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       createRelationship($contact['child3'][0], $contact['child4'][0], $sibling);
     }
   }
+
+  //restore deleted (if any) custom field data
+  civicrm_api3('Contact', 'create', $restoreInformation);
 }
 }
 
