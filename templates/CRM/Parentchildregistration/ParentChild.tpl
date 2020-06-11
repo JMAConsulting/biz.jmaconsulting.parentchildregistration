@@ -36,16 +36,16 @@ CRM.$(function($) {
   var child4dob = '{/literal}{$smarty.const.CHILD4DOB}{literal}';
   var child4email = '{/literal}{$smarty.const.CHILD4EMAIL}{literal}';
 
-  var parent1profile = 21;
-  var parent2profile = 22;
-  var child2profile = 18;
-  var child3profile = 19;
-  var child4profile = 20;
+  var parent1profile = 34;
+  var parent2profile = 35;
+  var child2profile = 36;
+  var child3profile = 37;
+  var child4profile = 38;
 
   function hideShowChildProfile(noofchildren) {
-    var child2profile = 18;
-    var child3profile = 19;
-    var child4profile = 20;
+    var child2profile = 36;
+    var child3profile = 37;
+    var child4profile = 38;
 
     if (noofchildren == 1) {
       $('.crm-profile-id-'+child2profile).hide();
@@ -79,8 +79,8 @@ CRM.$(function($) {
   }
 
   function hideShowParentProfile(noofparents) {
-    var parent1profile = 21;
-    var parent2profile = 22;
+    var parent1profile = 34;
+    var parent2profile = 35;
 
     if (noofparents == 1) {
       $('.crm-profile-id-'+parent1profile).show();
