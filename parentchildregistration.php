@@ -693,7 +693,7 @@ function getChapRegIds() {
   ));
 
   $regionId = civicrm_api3('CustomField', 'getvalue', array(
-    'name' => 'Region',
+    'name' => 'Service Region',
     'return' => 'id',
     'custom_group_id' => "chapter_region",
   ));
