@@ -702,14 +702,17 @@ function getChapRegIds() {
 
 function setChapRegCodes($params, $existingCodes = []) {
   list($chapterId, $regionId) = getChapRegIds();
+  // Check if the chapter and region exist in CiviCRM.
+  $chapters = CRM_Core_OptionGroup:values('chapter_20180619153429', FALSE, FALSE, FALSE, NULL, 'label', FALSE);
+  $regions = CRM_Core_OptionGroup:values('service_region_20190320122604', FALSE, FALSE, FALSE, NULL, 'label', FALSE);
 
-  if (!empty($params['chapter'])) {
+  if (!empty($params['chapter']) && array_search($params['chapter'], $chapters)) {
     civicrm_api3('CustomValue', 'create', array(
       'entity_id' => $params['contact_id'],
       'custom_' . $chapterId => CRM_Core_DAO::VALUE_SEPARATOR . $params['chapter'] . CRM_Core_DAO::VALUE_SEPARATOR,
     ));
   }
-  if (!empty($params['region'])) {
+  if (!empty($params['region']) && array_search($params['region'], $regions)) {
     civicrm_api3('CustomValue', 'create', array(
       'entity_id' => $params['contact_id'],
       'custom_' . $regionId => CRM_Core_DAO::VALUE_SEPARATOR . $params['region'] . CRM_Core_DAO::VALUE_SEPARATOR,
