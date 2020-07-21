@@ -693,7 +693,7 @@ function getChapRegIds() {
   ));
 
   $regionId = civicrm_api3('CustomField', 'getvalue', array(
-    'name' => 'Service Region',
+    'name' => 'Service_Region',
     'return' => 'id',
     'custom_group_id' => "chapter_region",
   ));
@@ -703,8 +703,8 @@ function getChapRegIds() {
 function setChapRegCodes($params, $existingCodes = []) {
   list($chapterId, $regionId) = getChapRegIds();
   // Check if the chapter and region exist in CiviCRM.
-  $chapters = CRM_Core_OptionGroup:values('chapter_20180619153429', FALSE, FALSE, FALSE, NULL, 'label', FALSE);
-  $regions = CRM_Core_OptionGroup:values('service_region_20190320122604', FALSE, FALSE, FALSE, NULL, 'label', FALSE);
+  $chapters = CRM_Core_OptionGroup::values('chapter_20180619153429', FALSE, FALSE, FALSE, NULL, 'label', FALSE);
+  $regions = CRM_Core_OptionGroup::values('service_region_20190320122604', FALSE, FALSE, FALSE, NULL, 'label', FALSE);
 
   if (!empty($params['chapter']) && array_search($params['chapter'], $chapters)) {
     civicrm_api3('CustomValue', 'create', array(
