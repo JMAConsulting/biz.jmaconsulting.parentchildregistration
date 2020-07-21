@@ -637,6 +637,19 @@ function parentchildregistration_civicrm_postProcess($formName, &$form) {
       }
     }
 
+    // Set the chapter and region for parent as well.
+    if (!empty($form->_values['params'][$participantId]['postal_code-Primary'])) {
+      list($chapter, $region) = getChapRegCodes($form->_values['params'][$participantId]['postal_code-Primary']);
+      if ($chapter || $region) {
+        $cParams = [
+          'chapter' => $chapter,
+          'region' => $region,
+          'contact_id' => $parent,
+        ];
+        setChapRegCodes($cParams);
+      }
+    }
+
     // Create relationships
     $sibling = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Sibling of', 'id', 'name_a_b');
     $childRel = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Child of', 'id', 'name_a_b');
@@ -709,13 +722,13 @@ function setChapRegCodes($params, $existingCodes = []) {
   if (!empty($params['chapter']) && array_search($params['chapter'], $chapters)) {
     civicrm_api3('CustomValue', 'create', array(
       'entity_id' => $params['contact_id'],
-      'custom_' . $chapterId => CRM_Core_DAO::VALUE_SEPARATOR . $params['chapter'] . CRM_Core_DAO::VALUE_SEPARATOR,
+      'custom_' . $chapterId => [$params['chapter']],
     ));
   }
   if (!empty($params['region']) && array_search($params['region'], $regions)) {
     civicrm_api3('CustomValue', 'create', array(
       'entity_id' => $params['contact_id'],
-      'custom_' . $regionId => CRM_Core_DAO::VALUE_SEPARATOR . $params['region'] . CRM_Core_DAO::VALUE_SEPARATOR,
+      'custom_' . $regionId => $params['region'],
     ));
   }
 }
