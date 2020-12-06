@@ -15,31 +15,31 @@ define('CHILD1DOB', 'custom_312');
 define('CHILD1GEN', 'custom_313');
 define('FIRST_CONTACT', 'custom_358');
 
-define('PARENT1FN', 'custom_11');
-define('PARENT2FN', 'custom_13');
-define('PARENT1LN', 'custom_12');
-define('PARENT2LN', 'custom_14');
-define('PARENT1EMAIL', 'custom_28');
-define('PARENT2EMAIL', 'custom_29');
+define('PARENT1FN', 'custom_91');
+define('PARENT2FN', 'custom_93');
+define('PARENT1LN', 'custom_92');
+define('PARENT2LN', 'custom_94');
+define('PARENT1EMAIL', 'custom_107');
+define('PARENT2EMAIL', 'custom_108');
 
-define('CHILD2FN', 'custom_15');
-define('CHILD2LN', 'custom_16');
-define('CHILD2DOB', 'custom_22');
-define('CHILD2GEN', 'custom_25');
-define('CHILD2EMAIL', 'custom_31');
+define('CHILD2FN', 'custom_95');
+define('CHILD2LN', 'custom_96');
+define('CHILD2DOB', 'custom_101');
+define('CHILD2GEN', 'custom_104');
+define('CHILD2EMAIL', 'custom_109');
 
 
-define('CHILD3FN', 'custom_17');
-define('CHILD3LN', 'custom_18');
-define('CHILD3DOB', 'custom_23');
-define('CHILD3GEN', 'custom_26');
-define('CHILD3EMAIL', 'custom_32');
+define('CHILD3FN', 'custom_97');
+define('CHILD3LN', 'custom_98');
+define('CHILD3DOB', 'custom_102');
+define('CHILD3GEN', 'custom_105');
+define('CHILD3EMAIL', 'custom_110');
 
-define('CHILD4FN', 'custom_19');
-define('CHILD4LN', 'custom_20');
-define('CHILD4DOB', 'custom_24');
-define('CHILD4GEN', 'custom_27');
-define('CHILD4EMAIL', 'custom_33');
+define('CHILD4FN', 'custom_99');
+define('CHILD4LN', 'custom_100');
+define('CHILD4DOB', 'custom_103');
+define('CHILD4GEN', 'custom_106');
+define('CHILD4EMAIL', 'custom_111');
 
 // Price Sets
 define('CHILDPRICE', 'price_9');
@@ -54,3 +54,5 @@ define('FREEPARENT', 'price_199');
 
 //SloVar
 define('SLOVAR', 1510);
+define('PARENT1_STAYING', 'custom_74');
+define('PARENT2_STAYING', 'custom_85');

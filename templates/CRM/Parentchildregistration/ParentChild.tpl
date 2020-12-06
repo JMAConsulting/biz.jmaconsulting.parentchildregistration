@@ -42,35 +42,10 @@ CRM.$(function($) {
   var child3profile = 19;
   var child4profile = 20;
 
-  $('.crm-profile-id-'+parent1profile).hide();
-  $('.crm-profile-id-'+parent2profile).hide();
-  $('.crm-profile-id-'+child2profile).hide();
-  $('.crm-profile-id-'+child3profile).hide();
-  $('.crm-profile-id-'+child4profile).hide();
-
-  // Children
-  var selectedchildren = $('#'+childprice).select2('data');
-
-  if (selectedchildren) {
-    if (selectedchildren.text == 2) {
-      $('.crm-profile-id-'+child2profile).show();
-    }
-
-    if (selectedchildren.text == 3) {
-      $('.crm-profile-id-'+child2profile).show();
-      $('.crm-profile-id-'+child3profile).show();
-    }
-
-    if (selectedchildren.text == 4) {
-      $('.crm-profile-id-'+child2profile).show();
-      $('.crm-profile-id-'+child3profile).show();
-      $('.crm-profile-id-'+child4profile).show();
-    }
-  }
-
-
-  $('#'+childprice).select2().on("change", function(e) {
-    var noofchildren = e.added.text;
+  function hideShowChildProfile(noofchildren) {
+    var child2profile = 18;
+    var child3profile = 19;
+    var child4profile = 20;
 
     if (noofchildren == 1) {
       $('.crm-profile-id-'+child2profile).hide();
@@ -80,28 +55,13 @@ CRM.$(function($) {
 
     if (noofchildren == 2) {
       $('.crm-profile-id-'+child2profile).show();
-      $('#'+child3fn).val('');
-      $('#'+child3ln).val('');
-      $('#'+child3email).val('');
-      $('#'+child3dob).val('');
-      $('#'+child3dob).next('input').datepicker('setDate', null);
       $('.crm-profile-id-'+child3profile).hide();
-      $('#'+child4fn).val('');
-      $('#'+child4ln).val('');
-      $('#'+child4email).val('');
-      $('#'+child4dob).val('');
-      $('#'+child4dob).next('input').datepicker('setDate', null);
       $('.crm-profile-id-'+child4profile).hide();
     }
 
     if (noofchildren == 3) {
       $('.crm-profile-id-'+child2profile).show();
       $('.crm-profile-id-'+child3profile).show();
-      $('#'+child4fn).val('');
-      $('#'+child4ln).val('');
-      $('#'+child4email).val('');
-      $('#'+child4dob).val('');
-      $('#'+child4dob).next('input').datepicker('setDate', null);
       $('.crm-profile-id-'+child4profile).hide();
     }
 
@@ -115,42 +75,15 @@ CRM.$(function($) {
       $('.crm-profile-id-'+child2profile).hide();
       $('.crm-profile-id-'+child3profile).hide();
       $('.crm-profile-id-'+child4profile).hide();
-      $('#'+child2fn).val('');
-      $('#'+child2ln).val('');
-      $('#'+child2email).select2('val', '');
-      $('#'+child2dob).val('');
-      $('#'+child2dob).next('input').datepicker('setDate', null);
-      $('#'+child3fn).val('');
-      $('#'+child3ln).val('');
-      $('#'+child3email).val('');
-      $('#'+child3dob).val('');
-      $('#'+child3dob).next('input').datepicker('setDate', null);
-      $('#'+child4fn).val('');
-      $('#'+child4ln).val('');
-      $('#'+child4email).val('');
-      $('#'+child4dob).val('');
-      $('#'+child4dob).next('input').datepicker('setDate', null);
     }
-  });
-
-  // Parents
-  if ($('#'+parentprice).select2('data').text == 1) {
-    $('.crm-profile-id-'+parent1profile).show();
   }
 
-  if ($('#'+parentprice).select2('data').text == 2) {
-    $('.crm-profile-id-'+parent1profile).show();
-    $('.crm-profile-id-'+parent2profile).show();
-  }
-
-  $('#'+parentprice).select2().on("change", function(e) {
-    var noofparents = e.added.text;
+  function hideShowParentProfile(noofparents) {
+    var parent1profile = 21;
+    var parent2profile = 22;
 
     if (noofparents == 1) {
       $('.crm-profile-id-'+parent1profile).show();
-      $('#'+parent2fn).val('');
-      $('#'+parent2ln).val('');
-      $('#'+parent2email).val('');
       $('.crm-profile-id-'+parent2profile).hide();
     }
 
@@ -162,13 +95,76 @@ CRM.$(function($) {
     if (noofparents == '- select -') {
       $('.crm-profile-id-'+parent1profile).hide();
       $('.crm-profile-id-'+parent2profile).hide();
-      $('#'+parent1fn).val('');
-      $('#'+parent1ln).val('');
-      $('#'+parent1email).val('');
+    }
+  }
+
+  hideShowChildProfile($('#' + childprice).select2('data').text);
+  hideShowParentProfile($('#' + parentprice).select2('data').text);
+
+  $('#_qf_Register_upload-bottom').on('click', function(e) {
+
+    // Children
+    var selectedchildren = $('#'+childprice).select2('data');
+
+    if (selectedchildren) {
+      hideShowChildProfile(selectedchildren.text);
+      if (selectedchildren.text == 2) {
+        $('#'+child3fn).val('');
+        $('#'+child3ln).val('');
+        $('#'+child3email).val('');
+        $('#'+child3dob).val('');
+        $('#'+child3dob).next('input').datepicker('setDate', null);
+        $('#'+child4fn).val('');
+        $('#'+child4ln).val('');
+        $('#'+child4email).val('');
+        $('#'+child4dob).val('');
+        $('#'+child4dob).next('input').datepicker('setDate', null);
+      }
+
+      if (selectedchildren.text == 3) {
+        $('#'+child4fn).val('');
+        $('#'+child4ln).val('');
+        $('#'+child4email).val('');
+        $('#'+child4dob).val('');
+        $('#'+child4dob).next('input').datepicker('setDate', null);
+      }
+
+      if (selectedchildren.text == 1) {
+        $('#'+child2fn).val('');
+        $('#'+child2ln).val('');
+        $('#'+child2email).select2('val', '');
+        $('#'+child2dob).val('');
+        $('#'+child2dob).next('input').datepicker('setDate', null);
+        $('#'+child3fn).val('');
+        $('#'+child3ln).val('');
+        $('#'+child3email).val('');
+        $('#'+child3dob).val('');
+        $('#'+child3dob).next('input').datepicker('setDate', null);
+        $('#'+child4fn).val('');
+        $('#'+child4ln).val('');
+        $('#'+child4email).val('');
+        $('#'+child4dob).val('');
+        $('#'+child4dob).next('input').datepicker('setDate', null);
+      }
+    }
+
+    // Parents
+    hideShowParentProfile($('#'+parentprice).select2('data').text);
+    if ($('#'+parentprice).select2('data').text == 1) {
       $('#'+parent2fn).val('');
       $('#'+parent2ln).val('');
       $('#'+parent2email).val('');
     }
+  });
+
+
+
+  $('#'+childprice).select2().on("change", function(e) {
+    hideShowChildProfile(e.added.text);
+  });
+
+  $('#'+parentprice).select2().on("change", function(e) {
+    hideShowParentProfile(e.added.text);
   });
 });
 </script>
